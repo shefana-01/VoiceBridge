@@ -73,7 +73,7 @@ export default function Layout() {
   );
 
   const isSanctuary = location.pathname === '/' || location.pathname === '/security';
-  const isBoards = location.pathname.startsWith('/boards');
+  const isBoards = location.pathname.startsWith('/boards') || location.pathname.startsWith('/community');
   const isLibrary = location.pathname.startsWith('/icons');
   const isAnalytics = location.pathname.startsWith('/analytics');
   
