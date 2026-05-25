@@ -1,3 +1,7 @@
+# Copyright (c) 2026 Afsara Saima Mannan
+# Licensed under the PolyForm Noncommercial License 1.0. 
+# See the LICENSE.txt file in the project root for full terms.
+
 from django.utils.dateparse import parse_datetime
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
