@@ -73,7 +73,7 @@ export default function Layout() {
   );
 
   const isSanctuary = location.pathname === '/' || location.pathname === '/security';
-  const isBoards = location.pathname.startsWith('/boards') || location.pathname.startsWith('/community');
+  const isCommunity = location.pathname.startsWith('/community');
   const isLibrary = location.pathname.startsWith('/icons');
   const isAnalytics = location.pathname.startsWith('/analytics');
   
@@ -81,7 +81,7 @@ export default function Layout() {
   
   if (isSanctuary) {
     bgImage = "https://lh3.googleusercontent.com/aida/ADBb0ugfNHTD0P3lU6cLC_v5RIBUs0V9CevFqvq4Bwho4-IoDHnS9V8QC3gpzZjMdRYnRHgG_ryzO3_3N3p5s3oohWOZU6WgZnQHq7EELPOGIt04C-yUSdCfjdlNoOVAlRS2iWUMAYCXWp6zPOA92SmeIEz12Xpu6hmTKE8Sx1jPBZZzdcgAv264MsbFZJMnOhUBC8DOdZqMAbp44fsslLkNMzTIp3f4apz21lHh5zWrwUB6OiwRxjCCqEFrZw";
-  } else if (isBoards) {
+  } else if (isCommunity) {
     bgImage = "/backgrounds/boards-bg.jpg";
   } else if (isLibrary) {
     bgImage = "/backgrounds/library-bg.jpg";
