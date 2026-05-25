@@ -74,6 +74,15 @@ START_VOICEBRIDGE.bat
 fix_path.ps1
 test_login.ps1
 *.zip
+temp_unzip/
+set_pass.py
+test_sync.py
+prepare_commits.py
+add_headers.py
+
+# ----- Virtual Environments ----------------------------------
+.venv/
+venv/
 
 # ----- Logs --------------------------------------------------
 *.log
