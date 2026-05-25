@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="6dp"
-    android:background="@color/background_light"
+    android:background="@drawable/bg_atmospheric"
     android:keepScreenOn="true">
 
     <!-- Settings & Toggles Row -->
@@ -57,7 +57,8 @@
         android:id="@+id/strip_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/strip_bg"
+        android:background="@drawable/glass_border"
+        android:backgroundTint="#66FFFFFF"
         android:padding="6dp"
         android:minHeight="64dp"
         android:layout_marginTop="8dp"
