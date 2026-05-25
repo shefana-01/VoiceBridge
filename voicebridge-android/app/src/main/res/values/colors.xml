@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#BDE0FE</color>
+    <color name="colorPrimaryDark">#A2D2FF</color>
+    <color name="colorAccent">#FFC8DD</color>
+    <color name="ic_launcher_background">#FFAFCC</color>
+
+    <!-- Surface tokens used by themes.xml + layouts -->
+    <color name="background_light">#F9F9F6</color>
+    <color name="background_pastel">#FDFBF7</color>
+    <color name="ink">#52625D</color>
+    <color name="ink_soft">#8B9D98</color>
+    <color name="line">#D5E6E0</color>
+    
+    <!-- High Contrast alternative colors -->
+    <color name="hc_background">#000000</color>
+    <color name="hc_ink">#FFFFFF</color>
+    <color name="hc_primary">#FFFF00</color>
+</resources>
