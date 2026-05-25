@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: voicebridge
+      POSTGRES_USER: vb_user
+      POSTGRES_PASSWORD: vb_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./voicebridge-backend
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./voicebridge-backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=dev_secret_key_123
+      - DB_NAME=voicebridge
+      - DB_USER=vb_user
+      - DB_PASSWORD=vb_password
+      - DB_HOST=db
+      - DB_PORT=5432
+      - ALLOWED_HOSTS=localhost,127.0.0.1,backend
+      - CORS_ALLOWED_ORIGINS=http://localhost:3000
+    depends_on:
+      - db
+
+  frontend:
+    build: ./voicebridge-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./voicebridge-frontend:/app
+      - /app/node_modules
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000/api
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
