@@ -3,15 +3,17 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 
 const NAV = [
-  { to: '/',          label: 'Dashboard',    icon: 'dashboard',         end: true },
-  { to: '/children',  label: 'Children',     icon: 'child_care'             },
-  { to: '/boards',    label: 'Boards',       icon: 'dashboard'              },
-  { to: '/community', label: 'Community',    icon: 'groups'                 },
-  { to: '/icons',     label: 'Library',      icon: 'auto_awesome_mosaic'    },
-  { to: '/assets/new',label: 'Voice Bridge', icon: 'graphic_eq'             },
-  { to: '/analytics', label: 'Analytics',    icon: 'insights'               },
-  { to: '/security',  label: 'Security',     icon: 'security'               },
-  { to: '/settings',  label: 'Settings',     icon: 'settings'               },
+  { to: '/',            label: 'Dashboard',    icon: 'dashboard',         end: true },
+  { to: '/children',    label: 'Children',     icon: 'child_care'             },
+  { to: '/boards',      label: 'Boards',       icon: 'dashboard'              },
+  { to: '/community',   label: 'Community',    icon: 'groups'                 },
+  { to: '/icons',       label: 'Library',      icon: 'auto_awesome_mosaic'    },
+  { to: '/assets/new',  label: 'Voice Bridge', icon: 'graphic_eq'             },
+  { to: '/maintenance', label: 'Maintenance',  icon: 'medical_services'       },
+  { to: '/analytics',   label: 'Analytics',    icon: 'insights'               },
+  { to: '/profile',     label: 'Profile',      icon: 'person'                 },
+  { to: '/security',    label: 'Security',     icon: 'security'               },
+  { to: '/settings',    label: 'Settings',     icon: 'settings'               },
 ];
 
 export default function Layout() {
@@ -56,18 +58,21 @@ export default function Layout() {
         ))}
       </nav>
       <div className="px-md mt-auto mb-4">
-        <div className="p-4 rounded-xl glass-card flex items-center justify-between gap-4 cursor-pointer" onClick={logout}>
+        <NavLink to="/profile" onClick={() => setDrawerOpen(false)} className="block p-4 rounded-xl glass-card mb-2 hover:shadow-lg transition-all">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
               {(displayName[0] || 'C').toUpperCase()}
             </div>
             <div>
               <p className="font-title-md text-on-surface">{displayName}</p>
-              <p className="text-xs text-on-surface-variant">Sign out</p>
+              <p className="text-xs text-on-surface-variant">View profile</p>
             </div>
           </div>
-          <span className="material-symbols-outlined text-on-surface-variant">logout</span>
-        </div>
+        </NavLink>
+        <button onClick={logout} className="w-full p-3 rounded-xl glass-card flex items-center justify-center gap-2 text-on-surface-variant hover:text-error hover:bg-error-container/30 transition-all cursor-pointer">
+          <span className="material-symbols-outlined text-sm">logout</span>
+          <span className="text-sm font-semibold">Log out</span>
+        </button>
       </div>
     </>
   );
@@ -76,6 +81,8 @@ export default function Layout() {
   const isCommunity = location.pathname.startsWith('/community');
   const isLibrary = location.pathname.startsWith('/icons');
   const isAnalytics = location.pathname.startsWith('/analytics');
+  const isProfile = location.pathname.startsWith('/profile');
+  const isMaintenance = location.pathname.startsWith('/maintenance');
   
   let bgImage = "https://lh3.googleusercontent.com/aida-public/AB6AXuD_4PWmZ-0nCsZ6edf5iXGGOwdnfekV-dyb4r5NPCKZqMDNuJpN0d7Au1LDy2AYlpBduY_2y6JHCIXUeXgHi_schp9M59u2falVJpaMr1vrpAI9xFullCRKufMRByHD7b4Fd8VRszK0MaxBuofUzdcg-1a7s102PGD_Yg-N02KBivFs0p9SY3CJIwBS4U770khGppnKF6kdqbdkT6PzkdbFLs8U-mP3KKteIVtRCwNak_Or6abPsXXO_JLUYUg0JHzfrH2Ga831Y7A";
   
@@ -87,6 +94,10 @@ export default function Layout() {
     bgImage = "/backgrounds/library-bg.jpg";
   } else if (isAnalytics) {
     bgImage = "/backgrounds/analytics-bg.jpg";
+  } else if (isProfile) {
+    bgImage = "/backgrounds/profile-bg.jpg";
+  } else if (isMaintenance) {
+    bgImage = "/backgrounds/maintenance-bg.jpg";
   }
 
   return (

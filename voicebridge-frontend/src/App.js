@@ -17,6 +17,8 @@ import BoardEditor from './pages/BoardEditor';
 import Community from './pages/Community';
 import Security from './pages/Security';
 import Analytics from './pages/Analytics';
+import Profile from './pages/Profile';
+import Maintenance from './pages/Maintenance';
 
 function RequireAuth({ children }) {
   const { user, loading } = useAuth();
@@ -58,6 +60,8 @@ export default function App() {
           <Route path="/boards/:id/edit" element={<BoardEditor />} />
           <Route path="/community"       element={<Community />} />
           <Route path="/community/:id"   element={<PageStub title="Template Preview" />} />
+          <Route path="/profile"         element={<Profile />} />
+          <Route path="/maintenance"     element={<Maintenance />} />
           <Route path="/sync"            element={<PageStub title="Sync Settings" />} />
           <Route path="/security"        element={<Security />} />
           <Route path="/analytics"       element={<Analytics />} />
