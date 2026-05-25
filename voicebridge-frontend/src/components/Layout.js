@@ -73,13 +73,26 @@ export default function Layout() {
   );
 
   const isSanctuary = location.pathname === '/' || location.pathname === '/security';
-  const bgImage = isSanctuary
-    ? "https://lh3.googleusercontent.com/aida/ADBb0ugfNHTD0P3lU6cLC_v5RIBUs0V9CevFqvq4Bwho4-IoDHnS9V8QC3gpzZjMdRYnRHgG_ryzO3_3N3p5s3oohWOZU6WgZnQHq7EELPOGIt04C-yUSdCfjdlNoOVAlRS2iWUMAYCXWp6zPOA92SmeIEz12Xpu6hmTKE8Sx1jPBZZzdcgAv264MsbFZJMnOhUBC8DOdZqMAbp44fsslLkNMzTIp3f4apz21lHh5zWrwUB6OiwRxjCCqEFrZw"
-    : "https://lh3.googleusercontent.com/aida-public/AB6AXuD_4PWmZ-0nCsZ6edf5iXGGOwdnfekV-dyb4r5NPCKZqMDNuJpN0d7Au1LDy2AYlpBduY_2y6JHCIXUeXgHi_schp9M59u2falVJpaMr1vrpAI9xFullCRKufMRByHD7b4Fd8VRszK0MaxBuofUzdcg-1a7s102PGD_Yg-N02KBivFs0p9SY3CJIwBS4U770khGppnKF6kdqbdkT6PzkdbFLs8U-mP3KKteIVtRCwNak_Or6abPsXXO_JLUYUg0JHzfrH2Ga831Y7A";
+  const isBoards = location.pathname.startsWith('/boards');
+  const isLibrary = location.pathname.startsWith('/icons');
+  const isAnalytics = location.pathname.startsWith('/analytics');
+  
+  let bgImage = "https://lh3.googleusercontent.com/aida-public/AB6AXuD_4PWmZ-0nCsZ6edf5iXGGOwdnfekV-dyb4r5NPCKZqMDNuJpN0d7Au1LDy2AYlpBduY_2y6JHCIXUeXgHi_schp9M59u2falVJpaMr1vrpAI9xFullCRKufMRByHD7b4Fd8VRszK0MaxBuofUzdcg-1a7s102PGD_Yg-N02KBivFs0p9SY3CJIwBS4U770khGppnKF6kdqbdkT6PzkdbFLs8U-mP3KKteIVtRCwNak_Or6abPsXXO_JLUYUg0JHzfrH2Ga831Y7A";
+  
+  if (isSanctuary) {
+    bgImage = "https://lh3.googleusercontent.com/aida/ADBb0ugfNHTD0P3lU6cLC_v5RIBUs0V9CevFqvq4Bwho4-IoDHnS9V8QC3gpzZjMdRYnRHgG_ryzO3_3N3p5s3oohWOZU6WgZnQHq7EELPOGIt04C-yUSdCfjdlNoOVAlRS2iWUMAYCXWp6zPOA92SmeIEz12Xpu6hmTKE8Sx1jPBZZzdcgAv264MsbFZJMnOhUBC8DOdZqMAbp44fsslLkNMzTIp3f4apz21lHh5zWrwUB6OiwRxjCCqEFrZw";
+  } else if (isBoards) {
+    bgImage = "/backgrounds/boards-bg.jpg";
+  } else if (isLibrary) {
+    bgImage = "/backgrounds/library-bg.jpg";
+  } else if (isAnalytics) {
+    bgImage = "/backgrounds/analytics-bg.jpg";
+  }
 
   return (
     <div className="font-body-lg text-on-surface min-h-screen">
       <img alt="Atmospheric background" className="sanctuary-bg" src={bgImage} />
+      <div className="fixed inset-0 bg-white/30 dark:bg-black/40 backdrop-blur-sm z-[-1]"></div>
       
       {/* Desktop Sidebar */}
       <aside className="fixed left-0 top-0 h-screen hidden lg:flex flex-col py-xl z-40 w-[280px] rounded-r-lg bg-white/20 border-r border-white/20 backdrop-blur-2xl shadow-2xl shadow-primary/5">
