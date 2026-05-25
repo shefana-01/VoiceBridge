@@ -1,0 +1,96 @@
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from django.conf import settings
+
+
+class Caregiver(AbstractUser):
+    """
+    The adult who logs in to the React admin panel.
+    Inherits username, email, password, first_name, last_name from AbstractUser.
+    """
+
+    class Role(models.TextChoices):
+        PARENT    = "PARENT",    _("Parent / Family")
+        THERAPIST = "THERAPIST", _("Speech / OT Therapist")
+        TEACHER   = "TEACHER",   _("Teacher / School Staff")
+        OTHER     = "OTHER",     _("Other Caregiver")
+
+    role = models.CharField(
+        max_length=16,
+        choices=Role.choices,
+        default=Role.PARENT,
+    )
+    phone = models.CharField(max_length=20, blank=True)
+    organisation = models.CharField(
+        max_length=120, blank=True,
+        help_text="School or therapy centre, if applicable.",
+    )
+    mfa_enabled = models.BooleanField(default=False)
+    mfa_secret = models.CharField(max_length=32, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    REQUIRED_FIELDS = ["email"]
+
+    class Meta:
+        ordering = ["-date_joined"]
+        verbose_name = "Caregiver"
+        verbose_name_plural = "Caregivers"
+        indexes = [models.Index(fields=["email"])]
+
+    def __str__(self) -> str:
+        return f"{self.get_full_name() or self.username} ({self.role})"
+
+
+class Child(models.Model):
+    """
+    A non-verbal individual using VoiceBridge.
+    Their boards belong to them, but the Caregiver controls everything
+    via the admin panel. The child has no login of their own.
+    """
+    caregiver = models.ForeignKey(
+        Caregiver,
+        on_delete=models.CASCADE,
+        related_name="children",
+    )
+    name = models.CharField(max_length=80)
+    date_of_birth = models.DateField(null=True, blank=True)
+    avatar = models.ImageField(
+        upload_to="avatars/%Y/%m/",
+        null=True, blank=True,
+    )
+    notes = models.TextField(
+        blank=True,
+        help_text="Private notes (preferences, sensory needs, etc.)",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["name"]
+        indexes = [models.Index(fields=["caregiver", "name"])]
+
+    def __str__(self) -> str:
+        return self.name
+
+class CareNote(models.Model):
+    """A short mindful reflection logged by a caregiver."""
+
+    caregiver = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="care_notes",
+        on_delete=models.CASCADE)
+    child = models.ForeignKey(
+        "accounts.Child",
+        related_name="care_notes",
+        on_delete=models.SET_NULL, null=True, blank=True)
+    text = models.TextField(max_length=1000)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [models.Index(fields=["caregiver", "-created_at"])]
+
+    def __str__(self):
+        return f"CareNote by {self.caregiver} @ {self.created_at:%Y-%m-%d}"
