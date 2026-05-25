@@ -1,0 +1,80 @@
+# ============================================================
+# VoiceBridge — .gitignore
+# ============================================================
+
+# ----- Stitch & External Tool Artifacts ----------------------
+stitch_screens/
+stitch-test/
+fetch_screens.*
+.stitch/
+contexts/
+**/stitch_*/
+
+# ----- Django Backend ----------------------------------------
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+*.pyd
+.env
+.env.*
+!.env.example
+db.sqlite3
+media/
+staticfiles/
+voicebridge-backend/.venv/
+voicebridge-backend/venv/
+
+# ----- React Frontend ----------------------------------------
+voicebridge-frontend/node_modules/
+voicebridge-frontend/dist/
+voicebridge-frontend/build/
+voicebridge-frontend/.env
+voicebridge-frontend/.env.local
+
+# ----- Android -----------------------------------------------
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+voicebridge-android/.gradle/
+voicebridge-android/build/
+voicebridge-android/app/build/
+voicebridge-android/local.properties
+voicebridge-android/**/*.iml
+voicebridge-android/captures/
+voicebridge-android/.idea/
+
+# ----- IntelliJ / PyCharm IDE --------------------------------
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# ----- OS files ----------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ----- IDE & Tool Config ------------------------------------
+.vscode/
+.claude/
+**/.claude/
+.junie/
+**/.junie/
+
+# ----- Backup / Track folders --------------------------------
+VoiceBridge-FixPack/
+VoiceBridge-Track1/
+VoiceBridge-Track2/
+
+# ----- Temp scripts & zips -----------------------------------
+START_VOICEBRIDGE.bat
+fix_path.ps1
+test_login.ps1
+*.zip
+
+# ----- Logs --------------------------------------------------
+*.log
+logs/
