@@ -99,56 +99,97 @@ export default function Layout() {
     bgImage = "/backgrounds/maintenance-bg.jpg";
   }
 
-  return (
-    <div className="font-body-lg text-on-surface min-h-screen">
-      <img alt="Atmospheric background" className="sanctuary-bg" src={bgImage} />
-      <div className="fixed inset-0 bg-white/30 dark:bg-black/40 backdrop-blur-sm z-[-1]"></div>
-      
-      {/* Desktop Sidebar */}
-      <aside className="fixed left-0 top-0 h-screen hidden lg:flex flex-col py-xl z-40 w-[280px] rounded-r-lg bg-white/20 border-r border-white/20 backdrop-blur-2xl shadow-2xl shadow-primary/5">
-        <SidebarBody />
-      </aside>
+    const [notificationsOpen, setNotificationsOpen] = useState(false);
 
-      {/* Mobile drawer overlay */}
-      {drawerOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex">
-          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setDrawerOpen(false)}></div>
-          <aside className="relative w-[280px] h-full bg-surface-bright flex flex-col shadow-2xl animate-[slidein_0.2s_ease]">
-            <SidebarBody />
-          </aside>
-        </div>
-      )}
+    // Mock notifications list
+    const notifications = [
+      { id: 1, title: 'Sync Successful', desc: 'Tablet successfully synced 6 items.', time: '2 mins ago', icon: 'sync' },
+      { id: 2, title: 'New Milestone', desc: 'Child used "Water" icon 5 times today!', time: '1 hour ago', icon: 'emoji_events' },
+      { id: 3, title: 'App Update', desc: 'VoiceBridge updated to v1.0.2', time: '1 day ago', icon: 'system_update' },
+    ];
 
-      {/* Main Content Area */}
-      <main className="lg:ml-[280px] p-gutter lg:p-lg min-h-screen flex flex-col">
-        {/* Header */}
-        <header className="flex flex-col md:flex-row md:items-center justify-between mb-xl gap-4">
-          <div className="flex items-center gap-4">
-            <button onClick={() => setDrawerOpen(true)} className="lg:hidden p-3 rounded-full glass-card hover:shadow-lg transition-all group">
-              <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">menu</span>
-            </button>
-            <div>
-              <h2 className="font-headline-lg text-on-surface text-3xl md:text-4xl">{greeting}, {displayName}.</h2>
-              <p className="text-on-surface-variant font-body-lg">Your sanctuary is ready for today's journey.</p>
-            </div>
+    return (
+      <div className="font-body-lg text-on-surface min-h-screen relative overflow-hidden">
+        <img alt="Atmospheric background" className="sanctuary-bg absolute inset-0 w-full h-full object-cover z-[-2]" src={bgImage} />
+        <div className="fixed inset-0 bg-white/30 dark:bg-black/40 backdrop-blur-sm z-[-1]"></div>
+        
+        {/* Desktop Sidebar */}
+        <aside className="fixed left-0 top-0 h-screen hidden lg:flex flex-col py-xl z-40 w-[280px] rounded-r-lg bg-white/20 border-r border-white/20 backdrop-blur-2xl shadow-2xl shadow-primary/5">
+          <SidebarBody />
+        </aside>
+
+        {/* Mobile drawer overlay */}
+        {drawerOpen && (
+          <div className="lg:hidden fixed inset-0 z-50 flex">
+            <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setDrawerOpen(false)}></div>
+            <aside className="relative w-[280px] h-full bg-surface-bright flex flex-col shadow-2xl animate-[slidein_0.2s_ease]">
+              <SidebarBody />
+            </aside>
           </div>
-          <div className="flex items-center gap-4">
-            <button onClick={toggleTheme} className="p-3 rounded-full glass-card hover:shadow-lg transition-all group">
-              <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">dark_mode</span>
-            </button>
-            <button className="p-3 rounded-full glass-card hover:shadow-lg transition-all group relative">
-              <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">notifications</span>
-              <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
-            </button>
-            <div className="h-10 w-[1px] bg-white/40"></div>
-            <div className="flex items-center gap-3">
-              <div className="text-right hidden sm:block">
-                <p className="font-label-caps text-on-surface">{day} {month} {year}</p>
-                <p className="text-xs text-on-surface-variant">Care Cycle: Day 14</p>
+        )}
+
+        {/* Main Content Area */}
+        <main className="lg:ml-[280px] p-gutter lg:p-lg min-h-screen flex flex-col relative">
+          {/* Header */}
+          <header className="flex flex-col md:flex-row md:items-center justify-between mb-xl gap-4">
+            <div className="flex items-center gap-4">
+              <button onClick={() => setDrawerOpen(true)} className="lg:hidden p-3 rounded-full glass-card hover:shadow-lg transition-all group">
+                <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">menu</span>
+              </button>
+              <div>
+                <h2 className="font-headline-lg text-on-surface text-3xl md:text-4xl">{greeting}, {displayName}.</h2>
+                <p className="text-on-surface-variant font-body-lg">Your sanctuary is ready for today's journey.</p>
               </div>
             </div>
-          </div>
-        </header>
+            <div className="flex items-center gap-4 relative">
+              <button onClick={toggleTheme} className="p-3 rounded-full glass-card hover:shadow-lg transition-all group">
+                <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">dark_mode</span>
+              </button>
+              
+              {/* Notifications Wrapper */}
+              <div className="relative">
+                <button 
+                  onClick={() => setNotificationsOpen(!notificationsOpen)}
+                  className="p-3 rounded-full glass-card hover:shadow-lg transition-all group relative cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">notifications</span>
+                  <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                </button>
+                
+                {/* Notifications Dropdown Panel */}
+                {notificationsOpen && (
+                  <div className="absolute right-0 mt-3 w-80 rounded-2xl glass-card backdrop-blur-3xl shadow-2xl border border-white/40 overflow-hidden z-50 animate-[slidein_0.2s_ease]">
+                    <div className="p-4 border-b border-white/20 bg-white/30 flex justify-between items-center">
+                      <h3 className="font-title-md font-bold text-on-surface">Notifications</h3>
+                      <button onClick={() => setNotificationsOpen(false)} className="material-symbols-outlined text-sm text-on-surface-variant hover:text-error">close</button>
+                    </div>
+                    <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
+                      {notifications.map((notif) => (
+                        <div key={notif.id} className="p-4 border-b border-white/10 hover:bg-white/20 transition-all cursor-pointer flex gap-3 items-start">
+                          <div className="p-2 rounded-full bg-primary/10 text-primary">
+                            <span className="material-symbols-outlined text-sm">{notif.icon}</span>
+                          </div>
+                          <div>
+                            <p className="font-semibold text-sm text-on-surface">{notif.title}</p>
+                            <p className="text-xs text-on-surface-variant mt-1">{notif.desc}</p>
+                            <p className="text-[10px] text-primary mt-2 font-bold uppercase tracking-wider">{notif.time}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="h-10 w-[1px] bg-white/40"></div>
+              <div className="flex items-center gap-3">
+                <div className="text-right hidden sm:block">
+                  <p className="font-label-caps text-on-surface">{day} {month} {year}</p>
+                  <p className="text-xs text-on-surface-variant">Care Cycle: Day 14</p>
+                </div>
+              </div>
+            </div>
+          </header>
 
         <Outlet />
       </main>
