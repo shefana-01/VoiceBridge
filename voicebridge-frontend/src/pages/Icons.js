@@ -190,22 +190,37 @@ function UploadForm({ onDone }) {
                  onChange={(e) => setImage(e.target.files[0])} />
         </div>
         <div>
-          <label className="vb-label">Audio (MP3/WAV/OGG, max 3 MB)</label>
-          <input type="file" accept="audio/*" className="vb-input"
-                 onChange={(e) => setAudio(e.target.files[0])} />
-          <div className="flex items-center gap-2 mt-2">
-            {!recording ? (
-              <button type="button" onClick={startRec}
-                      className="vb-btn-secondary text-sm">● Record</button>
-            ) : (
-              <button type="button" onClick={stopRec}
-                      className="vb-btn-danger text-sm">■ Stop</button>
-            )}
-            {audio && (
-              <span className="text-xs text-on-surface-variant truncate">
-                {audio.name}
-              </span>
-            )}
+          <label className="vb-label mb-2">Audio (Choose one method)</label>
+          <div className="bg-surface-container/30 p-3 rounded-xl border border-outline-variant/30 space-y-4">
+            {/* Option 1: File Upload */}
+            <div>
+              <p className="text-sm font-semibold mb-1 text-primary">Option 1: Upload File</p>
+              <input type="file" accept="audio/*" className="vb-input text-sm"
+                     onChange={(e) => setAudio(e.target.files[0])} />
+            </div>
+
+            {/* Option 2: Record with Mic */}
+            <div className="border-t border-outline-variant/30 pt-3">
+              <p className="text-sm font-semibold mb-2 text-primary">Option 2: Record Directly</p>
+              <div className="flex items-center gap-3">
+                {!recording ? (
+                  <button type="button" onClick={startRec}
+                          className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-bold shadow-md hover:scale-105 transition-transform flex items-center gap-2">
+                    <span className="material-symbols-outlined text-sm">mic</span> Start Recording
+                  </button>
+                ) : (
+                  <button type="button" onClick={stopRec}
+                          className="bg-error text-white px-4 py-2 rounded-full text-sm font-bold shadow-md hover:scale-105 transition-transform flex items-center gap-2 animate-pulse">
+                    <span className="material-symbols-outlined text-sm">stop_circle</span> Stop Recording
+                  </button>
+                )}
+                {audio && (
+                  <span className="text-xs font-medium text-primary-fixed-dim bg-primary/10 px-3 py-1 rounded-full truncate max-w-[150px]">
+                    {audio.name}
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

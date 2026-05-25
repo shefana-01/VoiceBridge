@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 
 const NAV = [
   { to: '/',            label: 'Dashboard',    icon: 'dashboard',         end: true },
-  { to: '/profile',     label: 'Profile',      icon: 'person'                 },
   { to: '/children',    label: 'Children',     icon: 'child_care'             },
   { to: '/boards',      label: 'Boards',       icon: 'dashboard'              },
   { to: '/community',   label: 'Community',    icon: 'groups'                 },
@@ -193,11 +192,6 @@ export default function Layout() {
 
         <Outlet />
       </main>
-
-      {/* FAB for quick actions */}
-      <button className="fixed bottom-gutter right-gutter w-16 h-16 bg-gradient-to-tr from-secondary to-secondary-fixed-dim rounded-full flex items-center justify-center shadow-2xl text-white hover:scale-110 active:rotate-45 transition-all z-50">
-        <span className="material-symbols-outlined text-3xl">mic</span>
-      </button>
     </div>
   );
 }
