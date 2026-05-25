@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 
 const NAV = [
   { to: '/',            label: 'Dashboard',    icon: 'dashboard',         end: true },
+  { to: '/profile',     label: 'Profile',      icon: 'person'                 },
   { to: '/children',    label: 'Children',     icon: 'child_care'             },
   { to: '/boards',      label: 'Boards',       icon: 'dashboard'              },
   { to: '/community',   label: 'Community',    icon: 'groups'                 },
@@ -11,9 +12,7 @@ const NAV = [
   { to: '/assets/new',  label: 'Voice Bridge', icon: 'graphic_eq'             },
   { to: '/maintenance', label: 'Maintenance',  icon: 'medical_services'       },
   { to: '/analytics',   label: 'Analytics',    icon: 'insights'               },
-  { to: '/profile',     label: 'Profile',      icon: 'person'                 },
   { to: '/security',    label: 'Security',     icon: 'security'               },
-  { to: '/settings',    label: 'Settings',     icon: 'settings'               },
 ];
 
 export default function Layout() {
@@ -44,7 +43,7 @@ export default function Layout() {
         <h1 className="font-headline-lg text-primary tracking-tight">VoiceBridge</h1>
         <p className="font-label-caps text-label-caps text-on-surface-variant/70 uppercase tracking-widest mt-1">Empathetic Sanctuary</p>
       </div>
-      <nav className="flex-1 px-sm space-y-2">
+      <nav className="flex-1 px-sm space-y-2 overflow-y-auto custom-scrollbar">
         {NAV.map(({ to, label, icon, end }) => (
           <NavLink key={to} to={to} end={end} onClick={() => setDrawerOpen(false)}
             className={({ isActive }) =>
