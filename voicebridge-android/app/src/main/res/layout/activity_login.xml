@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:background="#F8F9FF">
+
+    <!-- Logo / Icon -->
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@mipmap/ic_launcher"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="VoiceBridge Logo" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="VoiceBridge"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="#0B1C30"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="One-time device setup"
+        android:textSize="14sp"
+        android:textColor="#434654"
+        android:layout_marginBottom="36dp"/>
+
+    <EditText
+        android:id="@+id/input_server_url"
+        style="@style/FieldInput"
+        android:hint="Server URL (e.g. http://192.168.1.5:8000)"
+        android:textColorHint="#94A3B8"
+        android:inputType="textUri" />
+
+    <EditText
+        android:id="@+id/input_username"
+        style="@style/FieldInput"
+        android:hint="Caregiver Username"
+        android:textColorHint="#94A3B8"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/input_password"
+        style="@style/FieldInput"
+        android:hint="Password"
+        android:textColorHint="#94A3B8"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/input_child_id"
+        style="@style/FieldInput"
+        android:hint="Child ID (from web dashboard)"
+        android:textColorHint="#94A3B8"
+        android:layout_marginBottom="24dp"
+        android:inputType="text" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#006A61"
+        android:text=""
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Sync &amp; Enter Child Mode"
+        android:backgroundTint="#1A5AD7"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+</LinearLayout>
