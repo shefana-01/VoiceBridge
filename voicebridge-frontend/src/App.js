@@ -35,18 +35,6 @@ function RequireAuth({ children }) {
   return user ? children : <Navigate to="/login" replace />;
 }
 
-/** Lightweight placeholder for routes that aren't built yet. */
-function PageStub({ title }) {
-  return (
-    <div className="vb-card text-center py-16 border-2 border-dashed border-outline-variant">
-      <h2 className="text-2xl font-bold mb-2">{title}</h2>
-      <p className="text-on-surface-variant">
-        This page is on the roadmap for an upcoming track.
-      </p>
-    </div>
-  );
-}
-
 export default function App() {
   return (
     <>
@@ -62,13 +50,11 @@ export default function App() {
           <Route path="/boards/new"      element={<BoardEditor />} />
           <Route path="/boards/:id/edit" element={<BoardEditor />} />
           <Route path="/community"       element={<Community />} />
-          <Route path="/community/:id"   element={<PageStub title="Template Preview" />} />
           <Route path="/profile"         element={<Profile />} />
           <Route path="/maintenance"     element={<Maintenance />} />
           <Route path="/journal"         element={<Journal />} />
           <Route path="/about"           element={<About />} />
           <Route path="/voicebridge-simulator" element={<VoiceBridge />} />
-          <Route path="/sync"            element={<PageStub title="Sync Settings" />} />
           <Route path="/settings"        element={<Settings />} />
           <Route path="/analytics"       element={<Analytics />} />
         </Route>

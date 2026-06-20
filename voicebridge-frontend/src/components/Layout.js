@@ -110,7 +110,7 @@ export default function Layout() {
 
     // Mock notifications list in state so they can be dismissed
     const [notifications, setNotifications] = useState([
-      { id: 1, title: 'Sync Successful', desc: 'Tablet successfully synced 6 items.', time: '2 mins ago', icon: 'sync', link: '/sync' },
+      { id: 1, title: 'Sync Successful', desc: 'Tablet successfully synced 6 items.', time: '2 mins ago', icon: 'sync', link: '/maintenance' },
       { id: 2, title: 'New Milestone', desc: 'Child used "Water" icon 5 times today!', time: '1 hour ago', icon: 'emoji_events', link: '/analytics' },
       { id: 3, title: 'App Update', desc: 'VoiceBridge updated to v1.0.2', time: '1 day ago', icon: 'system_update', link: '/about' },
     ]);
