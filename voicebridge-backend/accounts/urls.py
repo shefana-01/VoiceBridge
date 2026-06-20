@@ -15,12 +15,19 @@ from .views import (
     CareNoteViewSet,
     MfaSetupView,
     MfaVerifyView,
+    MfaVerifyView,
     MfaLoginVerifyView,
+    MedicationViewSet,
+    MedicationLogViewSet,
+    DailyLogViewSet,
 )
 
 router = DefaultRouter()
 router.register("children", ChildViewSet, basename="children")
 router.register(r"journal", CareNoteViewSet, basename="journal")
+router.register("medications", MedicationViewSet, basename="medications")
+router.register("medication-logs", MedicationLogViewSet, basename="medication-logs")
+router.register("daily-logs", DailyLogViewSet, basename="daily-logs")
 
 urlpatterns = [
     path("register/", RegisterView.as_view(),                name="register"),

@@ -8,10 +8,11 @@ const NAV = [
   { to: '/boards',      label: 'Boards',       icon: 'dashboard'              },
   { to: '/community',   label: 'Community',    icon: 'groups'                 },
   { to: '/icons',       label: 'Library',      icon: 'auto_awesome_mosaic'    },
-  { to: '/assets/new',  label: 'Voice Bridge', icon: 'graphic_eq'             },
+  { to: '/about',               label: 'VoiceBridge',  icon: 'info'                   },
+  { to: '/voicebridge-simulator', label: 'VB Simulator', icon: 'graphic_eq'             },
   { to: '/maintenance', label: 'Maintenance',  icon: 'medical_services'       },
   { to: '/analytics',   label: 'Analytics',    icon: 'insights'               },
-  { to: '/security',    label: 'Security',     icon: 'security'               },
+  { to: '/settings',    label: 'Settings',     icon: 'settings'               },
 ];
 
 export default function Layout() {
@@ -75,12 +76,13 @@ export default function Layout() {
     </>
   );
 
-  const isSanctuary = location.pathname === '/' || location.pathname === '/security';
+  const isSanctuary = location.pathname === '/';
   const isCommunity = location.pathname.startsWith('/community');
   const isLibrary = location.pathname.startsWith('/icons');
   const isAnalytics = location.pathname.startsWith('/analytics');
   const isProfile = location.pathname.startsWith('/profile');
   const isMaintenance = location.pathname.startsWith('/maintenance');
+  const isSettings = location.pathname.startsWith('/settings');
   
   let bgImage = "https://lh3.googleusercontent.com/aida-public/AB6AXuD_4PWmZ-0nCsZ6edf5iXGGOwdnfekV-dyb4r5NPCKZqMDNuJpN0d7Au1LDy2AYlpBduY_2y6JHCIXUeXgHi_schp9M59u2falVJpaMr1vrpAI9xFullCRKufMRByHD7b4Fd8VRszK0MaxBuofUzdcg-1a7s102PGD_Yg-N02KBivFs0p9SY3CJIwBS4U770khGppnKF6kdqbdkT6PzkdbFLs8U-mP3KKteIVtRCwNak_Or6abPsXXO_JLUYUg0JHzfrH2Ga831Y7A";
   

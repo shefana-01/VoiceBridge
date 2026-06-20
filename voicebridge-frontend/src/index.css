@@ -133,6 +133,12 @@
            outline-none focus:border-primary focus:ring-2 focus:ring-primary/20
            transition-shadow;
   }
+  
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    /* Tint the native clock icon to match the primary color (#78555e) */
+    filter: invert(36%) sepia(21%) saturate(543%) hue-rotate(295deg) brightness(97%) contrast(92%);
+  }
   .vb-label {
     @apply block text-sm font-semibold text-on-surface-variant mb-1.5;
   }

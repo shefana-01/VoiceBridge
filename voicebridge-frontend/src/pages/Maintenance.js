@@ -1,26 +1,99 @@
-import { useState } from 'react';
-
-const SAMPLE_MEDS = [
-  { id: 1, name: 'Risperidone', dose: '0.5 mg', frequency: 'Twice daily', time: '8:00 AM / 8:00 PM', notes: 'With food', active: true },
-  { id: 2, name: 'Melatonin', dose: '3 mg', frequency: 'Once daily', time: '9:00 PM', notes: 'Before bedtime', active: true },
-  { id: 3, name: 'Omega-3 Fish Oil', dose: '500 mg', frequency: 'Once daily', time: '8:00 AM', notes: 'With breakfast', active: true },
-];
-
-const SAMPLE_LOGS = [
-  { id: 1, date: '2026-05-25', mood: '😊', sleep: '8h 20m', meals: 'Good appetite', therapy: 'Speech therapy — 45 min', notes: 'Made eye contact with teacher today. Initiated a request using the board without prompting.' },
-  { id: 2, date: '2026-05-24', mood: '😐', sleep: '6h 50m', meals: 'Skipped lunch', therapy: 'Occupational therapy — 30 min', notes: 'Seemed tired in the morning. Engaged well during OT. Used 12 icons on the board.' },
-  { id: 3, date: '2026-05-23', mood: '😊', sleep: '9h 10m', meals: 'Great appetite', therapy: 'ABA session — 1 hr', notes: 'Very responsive day. Independently navigated the food board to ask for juice.' },
-];
+import { useState, useEffect } from 'react';
+import { toast } from '../components/Toaster';
+import { medications as medApi, medicationLogs as medLogApi, dailyLogs as dailyLogApi } from '../api/endpoints';
 
 export default function Maintenance() {
   const [activeTab, setActiveTab] = useState('medication');
   const [showAddMed, setShowAddMed] = useState(false);
   const [showAddLog, setShowAddLog] = useState(false);
 
-  // Form states for new medication
-  const [newMed, setNewMed] = useState({ name: '', dose: '', frequency: '', time: '', notes: '' });
-  // Form states for new daily log
-  const [newLog, setNewLog] = useState({ date: '', mood: '', sleep: '', meals: '', therapy: '', notes: '' });
+  // Data states
+  const [meds, setMeds] = useState([]);
+  const [medLogs, setMedLogs] = useState([]);
+  const [dailyLogs, setDailyLogs] = useState([]);
+
+  // Form states
+  const [newMed, setNewMed] = useState({ name: '', dose: '', frequency: '', time: '', notes: '', active: true });
+  const [newLog, setNewLog] = useState({ date: new Date().toISOString().split('T')[0], mood: '', sleep: '', meals: '', therapy: '', notes: '' });
+  const [medTimes, setMedTimes] = useState([]);
+
+  const formatTimeAMPM = (time24) => {
+    if (!time24) return '';
+    let [hours, minutes] = time24.split(':');
+    hours = parseInt(hours, 10);
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    return `${hours}:${minutes} ${ampm}`;
+  };
+
+  const loadData = () => {
+    medApi.list().then(({ data }) => setMeds(data.results ?? data)).catch(() => {});
+    
+    const today = new Date().toISOString().split('T')[0];
+    medLogApi.list({ date: today }).then(({ data }) => setMedLogs(data.results ?? data)).catch(() => {});
+    
+    dailyLogApi.list().then(({ data }) => setDailyLogs(data.results ?? data)).catch(() => {});
+  };
+
+  useEffect(() => { loadData(); }, []);
+
+  const handleSaveMed = async () => {
+    if (!newMed.name) return toast.error('Name is required.');
+    const finalMed = { ...newMed, time: medTimes.map(formatTimeAMPM).join(' / ') };
+    try {
+      await medApi.create(finalMed);
+      toast.success('Medication saved.');
+      setShowAddMed(false);
+      setNewMed({ name: '', dose: '', frequency: '', time: '', notes: '', active: true });
+      setMedTimes([]);
+      loadData();
+    } catch {
+      toast.error('Could not save medication.');
+    }
+  };
+
+  const handleSaveDailyLog = async () => {
+    if (!newLog.date) return toast.error('Date is required.');
+    try {
+      await dailyLogApi.create(newLog);
+      toast.success('Daily entry saved.');
+      setShowAddLog(false);
+      setNewLog({ date: new Date().toISOString().split('T')[0], mood: '', sleep: '', meals: '', therapy: '', notes: '' });
+      loadData();
+    } catch {
+      toast.error('Could not save daily entry.');
+    }
+  };
+
+  const handleMarkDone = async (medId, timeSlot) => {
+    const today = new Date().toISOString().split('T')[0];
+    try {
+      await medLogApi.create({ medication: medId, date: today, time_slot: timeSlot, is_done: true });
+      loadData();
+      toast.success('Marked as done.');
+    } catch {
+      toast.error('Could not mark done.');
+    }
+  };
+
+  // Generate today's schedule dynamically
+  const scheduleMap = {};
+  meds.filter(m => m.active).forEach(m => {
+    if (!m.time) return;
+    const times = m.time.split(/[/,]/).map(t => t.trim()).filter(Boolean);
+    times.forEach(t => {
+      if (!scheduleMap[t]) scheduleMap[t] = [];
+      const isDone = medLogs.some(log => log.medication === m.id && log.time_slot === t && log.is_done);
+      scheduleMap[t].push({ med: m, done: isDone });
+    });
+  });
+
+  const sortedTimes = Object.keys(scheduleMap).sort();
+  const schedule = sortedTimes.map(time => ({
+    time,
+    items: scheduleMap[time],
+    allDone: scheduleMap[time].every(i => i.done)
+  }));
 
   const tabs = [
     { key: 'medication', label: 'Medication', icon: 'medication' },
@@ -85,8 +158,28 @@ export default function Maintenance() {
                   <input className="vb-input" placeholder="e.g. Twice daily" value={newMed.frequency} onChange={e => setNewMed({...newMed, frequency: e.target.value})} />
                 </div>
                 <div>
-                  <label className="vb-label">Time</label>
-                  <input className="vb-input" placeholder="e.g. 8:00 AM" value={newMed.time} onChange={e => setNewMed({...newMed, time: e.target.value})} />
+                  <label className="vb-label">Time (AM/PM)</label>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {medTimes.map((t, idx) => (
+                      <span key={idx} className="vb-chip bg-primary-container text-on-primary-container flex items-center gap-1">
+                        {formatTimeAMPM(t)}
+                        <button type="button" onClick={() => setMedTimes(medTimes.filter((_, i) => i !== idx))} className="material-symbols-outlined text-xs hover:text-error">close</button>
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input 
+                      type="time" 
+                      className="vb-input flex-1" 
+                      id="time-picker"
+                      style={{ accentColor: '#78555e' }}
+                    />
+                    <button type="button" className="vb-btn-secondary py-2 text-sm" onClick={() => {
+                      const val = document.getElementById('time-picker').value;
+                      if (val && !medTimes.includes(val)) setMedTimes([...medTimes, val]);
+                      document.getElementById('time-picker').value = '';
+                    }}>Add</button>
+                  </div>
                 </div>
                 <div className="md:col-span-2">
                   <label className="vb-label">Notes</label>
@@ -94,7 +187,7 @@ export default function Maintenance() {
                 </div>
               </div>
               <div className="flex gap-3">
-                <button className="vb-btn-primary text-sm" onClick={() => setShowAddMed(false)}>Save Medication</button>
+                <button className="vb-btn-primary text-sm" onClick={handleSaveMed}>Save Medication</button>
                 <button className="vb-btn-ghost text-sm" onClick={() => setShowAddMed(false)}>Cancel</button>
               </div>
             </div>
@@ -102,7 +195,12 @@ export default function Maintenance() {
 
           {/* Medication Cards */}
           <div className="grid gap-4">
-            {SAMPLE_MEDS.map(med => (
+            {meds.length === 0 && (
+              <div className="py-12 text-center text-on-surface-variant bg-surface-container-low rounded-2xl border border-outline-variant">
+                No medications added yet.
+              </div>
+            )}
+            {meds.map(med => (
               <div key={med.id} className="vb-card p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-primary/20 to-secondary/20 flex items-center justify-center shrink-0">
@@ -114,16 +212,22 @@ export default function Maintenance() {
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="vb-chip bg-primary-container text-on-primary-container">
-                    <span className="material-symbols-outlined text-xs">schedule</span>
-                    {med.time}
-                  </span>
+                  {med.time && (
+                    <span className="vb-chip bg-primary-container text-on-primary-container">
+                      <span className="material-symbols-outlined text-xs">schedule</span>
+                      {med.time}
+                    </span>
+                  )}
                   {med.notes && (
                     <span className="vb-chip bg-tertiary-container text-on-tertiary-container">
                       {med.notes}
                     </span>
                   )}
-                  <span className="vb-chip bg-green-100 text-green-800">Active</span>
+                  {med.active ? (
+                    <span className="vb-chip bg-green-100 text-green-800">Active</span>
+                  ) : (
+                    <span className="vb-chip bg-gray-100 text-gray-800">Inactive</span>
+                  )}
                 </div>
               </div>
             ))}
@@ -133,22 +237,29 @@ export default function Maintenance() {
           <div className="vb-card p-6 mt-8">
             <h3 className="font-bold text-lg mb-4">Today's Schedule</h3>
             <div className="space-y-4">
-              {[
-                { time: '8:00 AM', meds: ['Risperidone 0.5 mg', 'Omega-3 500 mg'], done: true },
-                { time: '8:00 PM', meds: ['Risperidone 0.5 mg'], done: false },
-                { time: '9:00 PM', meds: ['Melatonin 3 mg'], done: false },
-              ].map((slot, i) => (
-                <div key={i} className={`flex items-center gap-4 p-4 rounded-2xl transition-all ${slot.done ? 'bg-green-50 border border-green-200' : 'bg-surface-container-low border border-outline-variant'}`}>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${slot.done ? 'bg-green-500 text-white' : 'bg-surface-container text-on-surface-variant'}`}>
-                    <span className="material-symbols-outlined text-sm">{slot.done ? 'check' : 'schedule'}</span>
+              {schedule.length === 0 && (
+                <div className="text-sm text-on-surface-variant italic">No schedules for today based on active medications. Ensure times are added using the format: 8:00 AM / 8:00 PM.</div>
+              )}
+              {schedule.map((slot, i) => (
+                <div key={i} className={`flex items-center gap-4 p-4 rounded-2xl transition-all ${slot.allDone ? 'bg-green-50 border border-green-200' : 'bg-surface-container-low border border-outline-variant'}`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${slot.allDone ? 'bg-green-500 text-white' : 'bg-surface-container text-on-surface-variant'}`}>
+                    <span className="material-symbols-outlined text-sm">{slot.allDone ? 'check' : 'schedule'}</span>
                   </div>
                   <div className="flex-1">
                     <p className="font-bold">{slot.time}</p>
-                    <p className="text-sm text-on-surface-variant">{slot.meds.join(', ')}</p>
+                    {slot.items.map((item, idx) => (
+                      <div key={idx} className="flex items-center justify-between text-sm mt-1">
+                        <span className={item.done ? 'line-through text-on-surface-variant' : 'text-on-surface'}>
+                          {item.med.name} {item.med.dose && `(${item.med.dose})`}
+                        </span>
+                        {!item.done && (
+                          <button onClick={() => handleMarkDone(item.med.id, slot.time)} className="vb-btn-secondary text-xs py-1 px-3 min-h-0">
+                            Mark Done
+                          </button>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                  {!slot.done && (
-                    <button className="vb-btn-secondary text-xs">Mark Done</button>
-                  )}
                 </div>
               ))}
             </div>
@@ -200,12 +311,12 @@ export default function Maintenance() {
                   <input className="vb-input" placeholder="e.g. Speech therapy — 45 min" value={newLog.therapy} onChange={e => setNewLog({...newLog, therapy: e.target.value})} />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="vb-label">Notes &amp; Observations</label>
+                  <label className="vb-label">Notes & Observations</label>
                   <textarea className="vb-input min-h-[100px] resize-y" placeholder="What happened today? Any milestones or concerns?" value={newLog.notes} onChange={e => setNewLog({...newLog, notes: e.target.value})} />
                 </div>
               </div>
               <div className="flex gap-3">
-                <button className="vb-btn-primary text-sm" onClick={() => setShowAddLog(false)}>Save Entry</button>
+                <button className="vb-btn-primary text-sm" onClick={handleSaveDailyLog}>Save Entry</button>
                 <button className="vb-btn-ghost text-sm" onClick={() => setShowAddLog(false)}>Cancel</button>
               </div>
             </div>
@@ -213,19 +324,21 @@ export default function Maintenance() {
 
           {/* Daily Log Entries */}
           <div className="space-y-4">
-            {SAMPLE_LOGS.map(log => (
+            {dailyLogs.length === 0 && (
+              <div className="py-12 text-center text-on-surface-variant bg-surface-container-low rounded-2xl border border-outline-variant">
+                No daily journal entries yet.
+              </div>
+            )}
+            {dailyLogs.map(log => (
               <div key={log.id} className="vb-card p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <span className="text-3xl">{log.mood}</span>
                     <div>
-                      <h3 className="font-bold text-lg">{new Date(log.date).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</h3>
+                      <h3 className="font-bold text-lg">{new Date(log.date).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' })}</h3>
                       <p className="text-xs text-on-surface-variant">{log.date}</p>
                     </div>
                   </div>
-                  <button className="p-2 rounded-full hover:bg-surface-container transition-colors">
-                    <span className="material-symbols-outlined text-on-surface-variant">more_vert</span>
-                  </button>
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
@@ -233,28 +346,30 @@ export default function Maintenance() {
                     <p className="text-xs text-on-surface-variant font-medium mb-1 flex items-center gap-1">
                       <span className="material-symbols-outlined text-xs">bedtime</span> Sleep
                     </p>
-                    <p className="font-bold">{log.sleep}</p>
+                    <p className="font-bold">{log.sleep || '—'}</p>
                   </div>
                   <div className="p-3 rounded-xl bg-surface-container-low">
                     <p className="text-xs text-on-surface-variant font-medium mb-1 flex items-center gap-1">
                       <span className="material-symbols-outlined text-xs">restaurant</span> Meals
                     </p>
-                    <p className="font-bold">{log.meals}</p>
+                    <p className="font-bold">{log.meals || '—'}</p>
                   </div>
                   <div className="p-3 rounded-xl bg-surface-container-low col-span-2 md:col-span-1">
                     <p className="text-xs text-on-surface-variant font-medium mb-1 flex items-center gap-1">
                       <span className="material-symbols-outlined text-xs">psychology</span> Therapy
                     </p>
-                    <p className="font-bold text-sm">{log.therapy}</p>
+                    <p className="font-bold text-sm">{log.therapy || '—'}</p>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-primary-container/20 border border-primary-container/40">
-                  <p className="text-xs text-on-surface-variant font-medium mb-1 flex items-center gap-1">
-                    <span className="material-symbols-outlined text-xs">edit_note</span> Notes
-                  </p>
-                  <p className="text-sm leading-relaxed">{log.notes}</p>
-                </div>
+                {log.notes && (
+                  <div className="p-4 rounded-xl bg-primary-container/20 border border-primary-container/40">
+                    <p className="text-xs text-on-surface-variant font-medium mb-1 flex items-center gap-1">
+                      <span className="material-symbols-outlined text-xs">edit_note</span> Notes
+                    </p>
+                    <p className="text-sm leading-relaxed">{log.notes}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>

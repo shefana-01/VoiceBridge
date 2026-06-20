@@ -32,6 +32,7 @@ class Caregiver(AbstractUser):
     )
     mfa_enabled = models.BooleanField(default=False)
     mfa_secret = models.CharField(max_length=32, blank=True)
+    preferences = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -98,3 +99,54 @@ class CareNote(models.Model):
 
     def __str__(self):
         return f"CareNote by {self.caregiver} @ {self.created_at:%Y-%m-%d}"
+
+class Medication(models.Model):
+    caregiver = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="medications"
+    )
+    name = models.CharField(max_length=120)
+    dose = models.CharField(max_length=80, blank=True)
+    frequency = models.CharField(max_length=80, blank=True)
+    time = models.CharField(max_length=120, blank=True)
+    notes = models.TextField(blank=True)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.name} ({self.dose})"
+
+class MedicationLog(models.Model):
+    medication = models.ForeignKey(
+        Medication, on_delete=models.CASCADE, related_name="logs"
+    )
+    caregiver = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
+    date = models.DateField()
+    time_slot = models.CharField(max_length=40)
+    is_done = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('medication', 'date', 'time_slot')
+
+class DailyLog(models.Model):
+    caregiver = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="daily_logs"
+    )
+    date = models.DateField()
+    mood = models.CharField(max_length=10, blank=True)
+    sleep = models.CharField(max_length=80, blank=True)
+    meals = models.CharField(max_length=120, blank=True)
+    therapy = models.CharField(max_length=120, blank=True)
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-date"]
+
+    def __str__(self):
+        return f"Daily Log on {self.date}"

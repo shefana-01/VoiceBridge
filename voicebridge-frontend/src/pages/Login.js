@@ -7,9 +7,8 @@ import { toast } from '../components/Toaster';
 export default function Login() {
   const { login, user } = useAuth();
   const nav = useNavigate();
-  const [form, setForm] = useState({ username: '', password: '', code: '' });
+  const [form, setForm] = useState({ username: '', password: '' });
   const [busy, setBusy] = useState(false);
-  const [mfaRequired, setMfaRequired] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -21,16 +20,11 @@ export default function Login() {
     e.preventDefault();
     setBusy(true);
     try {
-      await login(form.username, form.password, form.code);
+      await login(form.username, form.password);
       toast.success('Welcome back.');
       nav('/');
     } catch (err) {
-      if (err.response?.data?.mfa_required) {
-        setMfaRequired(true);
-        toast.info('Please enter your authenticator code.');
-      } else {
-        toast.error(err.response?.data?.detail || err.response?.data?.error || 'Sign in failed.');
-      }
+      toast.error(err.response?.data?.detail || err.response?.data?.error || 'Sign in failed.');
     } finally {
       setBusy(false);
     }
@@ -52,37 +46,23 @@ export default function Login() {
         <label className="vb-label">Username</label>
         <input className="vb-input mb-4" required autoFocus
                value={form.username}
-               onChange={(e) => setForm({ ...form, username: e.target.value })}
-               disabled={mfaRequired} />
+               onChange={(e) => setForm({ ...form, username: e.target.value })} />
 
         <label className="vb-label">Password</label>
         <input className="vb-input mb-6" required type="password"
                value={form.password}
-               onChange={(e) => setForm({ ...form, password: e.target.value })}
-               disabled={mfaRequired} />
-
-        {mfaRequired && (
-          <>
-            <label className="vb-label text-secondary">Authenticator Code</label>
-            <input className="vb-input mb-6 border-secondary focus:ring-secondary" 
-                   required type="text" maxLength="6" placeholder="000000" autoFocus
-                   value={form.code}
-                   onChange={(e) => setForm({ ...form, code: e.target.value })} />
-          </>
-        )}
+               onChange={(e) => setForm({ ...form, password: e.target.value })} />
 
         <button className="vb-btn-primary w-full" disabled={busy}>
-          {busy ? 'Signing in…' : mfaRequired ? 'Verify & Sign in' : 'Sign in'}
+          {busy ? 'Signing in…' : 'Sign in'}
         </button>
 
-        {!mfaRequired && (
-          <p className="text-center text-sm text-on-surface-variant mt-6">
-            New here?{' '}
-            <Link to="/register" className="text-primary font-semibold hover:underline">
-              Create an account
-            </Link>
-          </p>
-        )}
+        <p className="text-center text-sm text-on-surface-variant mt-6">
+          New here?{' '}
+          <Link to="/register" className="text-primary font-semibold hover:underline">
+            Create an account
+          </Link>
+        </p>
       </form>
       </div>
     </>

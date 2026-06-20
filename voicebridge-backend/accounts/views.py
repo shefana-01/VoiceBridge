@@ -157,3 +157,36 @@ class MfaLoginVerifyView(APIView):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         })
+
+from .models import Medication, MedicationLog, DailyLog
+from .serializers import MedicationSerializer, MedicationLogSerializer, DailyLogSerializer
+
+class MedicationViewSet(viewsets.ModelViewSet):
+    serializer_class = MedicationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Medication.objects.filter(caregiver=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(caregiver=self.request.user)
+
+class MedicationLogViewSet(viewsets.ModelViewSet):
+    serializer_class = MedicationLogSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return MedicationLog.objects.filter(caregiver=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(caregiver=self.request.user)
+
+class DailyLogViewSet(viewsets.ModelViewSet):
+    serializer_class = DailyLogSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return DailyLog.objects.filter(caregiver=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(caregiver=self.request.user)

@@ -38,6 +38,8 @@ class Icon(models.Model):
         PLACES     = "PLACES",     "Places"
         REQUESTS   = "REQUESTS",   "Requests & Needs"
         EMERGENCY  = "EMERGENCY",  "Emergency"
+        ROUTINES   = "ROUTINES",   "Routines"
+        MEDICATIONS= "MEDICATIONS","Medications"
         OTHER      = "OTHER",      "Other"
 
     owner = models.ForeignKey(
@@ -65,7 +67,7 @@ class Icon(models.Model):
     audio = models.FileField(
         upload_to="icons/audio/%Y/%m/",
         validators=[
-            FileExtensionValidator(["mp3", "wav", "m4a", "ogg"]),
+            FileExtensionValidator(["mp3", "wav", "m4a", "ogg", "webm", "weba"]),
             validate_audio,
         ],
         help_text="The voice the child will hear when tapping this icon.",

@@ -19,6 +19,8 @@ const CATEGORIES = [
   ['PLACES',     'Places'],
   ['REQUESTS',   'Requests & Needs'],
   ['EMERGENCY',  'Emergency'],
+  ['ROUTINES',   'Routines'],
+  ['MEDICATIONS','Medications'],
   ['OTHER',      'Other'],
 ];
 

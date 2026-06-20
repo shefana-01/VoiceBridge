@@ -6,10 +6,11 @@ import api from './client';
 
 export const auth = {
   register: (payload)         => api.post('/auth/register/', payload),
-  login:    (credentials)     => api.post('/auth/mfa/login/', credentials),
+  login:    (credentials)     => api.post('/auth/login/', credentials),
   refresh:  (refresh)         => api.post('/auth/refresh/',  { refresh }),
   logout:   (refresh)         => api.post('/auth/logout/',   { refresh }),
   me:       ()                => api.get ('/auth/me/'),
+  updateMe: (payload)         => api.patch('/auth/me/', payload),
 };
 
 export const children = {
@@ -37,13 +38,34 @@ export const boards = {
 };
 
 export const community = {
-  list:     (params={}) => api.get (`/community/`, { params }),
-  detail:   (id)        => api.get (`/community/${id}/`),
-  download: (id)        => api.post(`/community/${id}/download/`),
+  list:     (params={}) => api.get (`/community/templates/`, { params }),
+  detail:   (id)        => api.get (`/community/templates/${id}/`),
+  download: (id)        => api.post(`/community/templates/${id}/download/`),
 };
 
 export const journal = {
-  list:   (params) => api.get('/journal/', { params }),
-  create: (data)   => api.post('/journal/', data),
-  remove: (id)     => api.delete(`/journal/${id}/`),
+  list:   (params) => api.get('/auth/journal/', { params }),
+  create: (data)   => api.post('/auth/journal/', data),
+  remove: (id)     => api.delete(`/auth/journal/${id}/`),
+};
+
+export const medications = {
+  list:   (params) => api.get('/auth/medications/', { params }),
+  create: (data)   => api.post('/auth/medications/', data),
+  update: (id, data)=> api.put(`/auth/medications/${id}/`, data),
+  remove: (id)     => api.delete(`/auth/medications/${id}/`),
+};
+
+export const medicationLogs = {
+  list:   (params) => api.get('/auth/medication-logs/', { params }),
+  create: (data)   => api.post('/auth/medication-logs/', data),
+  update: (id, data)=> api.put(`/auth/medication-logs/${id}/`, data),
+  remove: (id)     => api.delete(`/auth/medication-logs/${id}/`),
+};
+
+export const dailyLogs = {
+  list:   (params) => api.get('/auth/daily-logs/', { params }),
+  create: (data)   => api.post('/auth/daily-logs/', data),
+  update: (id, data)=> api.put(`/auth/daily-logs/${id}/`, data),
+  remove: (id)     => api.delete(`/auth/daily-logs/${id}/`),
 };

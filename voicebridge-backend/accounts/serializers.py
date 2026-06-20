@@ -43,8 +43,8 @@ class CaregiverSerializer(serializers.ModelSerializer):
     class Meta:
         model = Caregiver
         fields = ("id", "username", "email", "first_name", "last_name",
-                  "role", "phone", "organisation", "date_joined")
-        read_only_fields = fields
+                  "role", "phone", "organisation", "preferences", "date_joined")
+        read_only_fields = ("id", "username", "role", "date_joined")
 
 
 class ChildSerializer(serializers.ModelSerializer):
@@ -55,6 +55,26 @@ class ChildSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "date_of_birth", "avatar", "notes",
                   "created_at", "updated_at")
         read_only_fields = ("id", "created_at", "updated_at")
+
+from .models import Medication, MedicationLog, DailyLog
+
+class MedicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Medication
+        fields = '__all__'
+        read_only_fields = ('caregiver', 'created_at')
+
+class MedicationLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MedicationLog
+        fields = '__all__'
+        read_only_fields = ('caregiver', 'created_at')
+
+class DailyLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DailyLog
+        fields = '__all__'
+        read_only_fields = ('caregiver', 'created_at')
 
 from .models import CareNote
 
