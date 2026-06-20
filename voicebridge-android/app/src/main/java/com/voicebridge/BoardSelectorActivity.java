@@ -52,6 +52,7 @@ public class BoardSelectorActivity extends AppCompatActivity {
             intent.putExtra("board_id", board.id);
             intent.putExtra("board_name", board.name);
             intent.putExtra("board_cols", board.cols);
+            intent.putExtra("board_rows", board.rows);
             startActivity(intent);
         });
         recyclerView.setAdapter(boardAdapter);

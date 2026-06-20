@@ -44,6 +44,7 @@ public class AudioPlayer {
     private TextToSpeech tts;
     private final Map<String, Integer> loadedSounds = new HashMap<>();
     private boolean ttsReady = false;
+    private String pendingTtsText = null;
 
     public AudioPlayer(Context context) {
         this.context = context.getApplicationContext();
@@ -66,6 +67,10 @@ public class AudioPlayer {
             if (status == TextToSpeech.SUCCESS) {
                 tts.setLanguage(Locale.getDefault());
                 ttsReady = true;
+                if (pendingTtsText != null && !pendingTtsText.isEmpty()) {
+                    speakTts(pendingTtsText);
+                    pendingTtsText = null;
+                }
             } else {
                 Log.w(TAG, "TextToSpeech failed to initialise (status=" + status + ")");
             }
@@ -109,7 +114,8 @@ public class AudioPlayer {
     private void speakTts(String text) {
         if (text == null || text.isEmpty()) return;
         if (!ttsReady) {
-            Log.w(TAG, "TTS not ready — dropping utterance: " + text);
+            Log.w(TAG, "TTS not ready — caching utterance: " + text);
+            pendingTtsText = text;
             return;
         }
         tts.speak(text, TextToSpeech.QUEUE_ADD, null,

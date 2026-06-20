@@ -32,7 +32,11 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
     }
 
     public void setBoards(List<Board> boards) {
-        this.boards = boards;
+        if (boards == null) {
+            this.boards = new ArrayList<>();
+        } else {
+            this.boards = boards;
+        }
         notifyDataSetChanged();
     }
 

@@ -13,8 +13,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.voicebridge.adapters.IconAdapter;
+import com.voicebridge.models.Icon;
 import com.voicebridge.utils.AudioPlayer;
 import com.voicebridge.viewmodel.MainViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The child's main AAC screen.
@@ -37,10 +41,11 @@ public class MainActivity extends AppCompatActivity {
 
         String boardId   = getIntent().getStringExtra("board_id");
         String boardName = getIntent().getStringExtra("board_name");
-        // Use the board's real column count so a 4×4 board shows 4 columns.
-        // Falls back to 4 if not provided.
+        // Use the board's real column and row count.
         int cols = getIntent().getIntExtra("board_cols", 4);
+        int rows = getIntent().getIntExtra("board_rows", 4);
         if (cols < 1) cols = 4;
+        if (rows < 1) rows = 4;
 
         TextView tvBoardTitle = findViewById(R.id.tv_board_title);
         if (tvBoardTitle != null && boardName != null) {
@@ -63,9 +68,29 @@ public class MainActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
         if (boardId != null) {
+            final int finalCols = cols;
+            final int finalRows = rows;
             viewModel.getIconsForBoard(boardId).observe(this, icons -> {
                 if (icons != null) {
-                    iconAdapter.setIcons(icons);
+                    List<Icon> paddedIcons = new ArrayList<>();
+                    int totalSlots = finalRows * finalCols;
+                    
+                    // Initialize with empty icons
+                    for (int i = 0; i < totalSlots; i++) {
+                        Icon emptyIcon = new Icon();
+                        emptyIcon.id = "empty_" + i;
+                        emptyIcon.label = "";
+                        paddedIcons.add(emptyIcon);
+                    }
+                    
+                    // Place real icons in their designated grid slots
+                    for (Icon icon : icons) {
+                        int slotIndex = (icon.row * finalCols) + icon.col;
+                        if (slotIndex >= 0 && slotIndex < totalSlots) {
+                            paddedIcons.set(slotIndex, icon);
+                        }
+                    }
+                    iconAdapter.setIcons(paddedIcons);
                 }
             });
         }

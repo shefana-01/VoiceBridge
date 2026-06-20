@@ -38,20 +38,22 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.IconViewHolder
         setHasStableIds(true); // for smoother RecyclerView animations
     }
 
-    /** Uses DiffUtil to only rebind changed items — prevents flickering. */
     public void setIcons(List<Icon> newIcons) {
+        if (newIcons == null) newIcons = new ArrayList<>();
+        final List<Icon> finalNewIcons = newIcons;
         DiffUtil.DiffResult diff = DiffUtil.calculateDiff(new DiffUtil.Callback() {
             @Override public int getOldListSize() { return icons.size(); }
-            @Override public int getNewListSize() { return newIcons.size(); }
+            @Override public int getNewListSize() { return finalNewIcons.size(); }
             @Override public boolean areItemsTheSame(int o, int n) {
-                return icons.get(o).id.equals(newIcons.get(n).id);
+                return icons.get(o).id.equals(finalNewIcons.get(n).id);
             }
             @Override public boolean areContentsTheSame(int o, int n) {
-                return icons.get(o).updatedAt != null
-                    && icons.get(o).updatedAt.equals(newIcons.get(n).updatedAt);
+                if (icons.get(o).updatedAt == null && finalNewIcons.get(n).updatedAt == null) return true;
+                if (icons.get(o).updatedAt == null || finalNewIcons.get(n).updatedAt == null) return false;
+                return icons.get(o).updatedAt.equals(finalNewIcons.get(n).updatedAt);
             }
         });
-        this.icons = newIcons;
+        this.icons = finalNewIcons;
         diff.dispatchUpdatesTo(this);
     }
 
@@ -71,6 +73,16 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.IconViewHolder
     @Override
     public void onBindViewHolder(@NonNull IconViewHolder holder, int position) {
         Icon icon = icons.get(position);
+        
+        // Handle empty padded slots to preserve grid layout mathematically
+        if (icon.label == null || (icon.label.isEmpty() && icon.remoteImageUrl == null && icon.localImagePath == null)) {
+            holder.itemView.setVisibility(View.INVISIBLE);
+            holder.itemView.setOnClickListener(null);
+            return;
+        } else {
+            holder.itemView.setVisibility(View.VISIBLE);
+        }
+
         holder.textViewLabel.setText(icon.label);
 
         // Load image with Glide — handles local files and remote URLs
