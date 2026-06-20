@@ -43,7 +43,7 @@ class CaregiverSerializer(serializers.ModelSerializer):
     class Meta:
         model = Caregiver
         fields = ("id", "username", "email", "first_name", "last_name",
-                  "role", "phone", "organisation", "preferences", "date_joined")
+                  "role", "phone", "organisation", "preferences", "avatar", "date_joined")
         read_only_fields = ("id", "username", "role", "date_joined")
 
 

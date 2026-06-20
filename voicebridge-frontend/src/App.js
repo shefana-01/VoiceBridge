@@ -21,6 +21,7 @@ import Profile from './pages/Profile';
 import Maintenance from './pages/Maintenance';
 import VoiceBridge from './pages/VoiceBridge';
 import About from './pages/About';
+import Journal from './pages/Journal';
 
 function RequireAuth({ children }) {
   const { user, loading } = useAuth();
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="/community/:id"   element={<PageStub title="Template Preview" />} />
           <Route path="/profile"         element={<Profile />} />
           <Route path="/maintenance"     element={<Maintenance />} />
+          <Route path="/journal"         element={<Journal />} />
           <Route path="/about"           element={<About />} />
           <Route path="/voicebridge-simulator" element={<VoiceBridge />} />
           <Route path="/sync"            element={<PageStub title="Sync Settings" />} />

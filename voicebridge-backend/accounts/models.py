@@ -33,6 +33,7 @@ class Caregiver(AbstractUser):
     mfa_enabled = models.BooleanField(default=False)
     mfa_secret = models.CharField(max_length=32, blank=True)
     preferences = models.JSONField(default=dict, blank=True)
+    avatar = models.ImageField(upload_to="caregiver_avatars/%Y/%m/", null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

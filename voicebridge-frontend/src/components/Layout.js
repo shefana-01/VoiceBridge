@@ -11,6 +11,7 @@ const NAV = [
   { to: '/about',               label: 'VoiceBridge',  icon: 'info'                   },
   { to: '/voicebridge-simulator', label: 'VB Simulator', icon: 'graphic_eq'             },
   { to: '/maintenance', label: 'Maintenance',  icon: 'medical_services'       },
+  { to: '/journal',     label: 'Journal',      icon: 'auto_stories'           },
   { to: '/analytics',   label: 'Analytics',    icon: 'insights'               },
   { to: '/settings',    label: 'Settings',     icon: 'settings'               },
 ];
@@ -59,8 +60,12 @@ export default function Layout() {
       <div className="px-md mt-auto mb-4">
         <NavLink to="/profile" onClick={() => setDrawerOpen(false)} className="block p-4 rounded-xl glass-card mb-2 hover:shadow-lg transition-all">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
-              {(displayName[0] || 'C').toUpperCase()}
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold overflow-hidden">
+              {user?.avatar ? (
+                <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                (displayName[0] || 'C').toUpperCase()
+              )}
             </div>
             <div>
               <p className="font-title-md text-on-surface">{displayName}</p>
@@ -83,12 +88,13 @@ export default function Layout() {
   const isProfile = location.pathname.startsWith('/profile');
   const isMaintenance = location.pathname.startsWith('/maintenance');
   const isSettings = location.pathname.startsWith('/settings');
+  const isJournal = location.pathname.startsWith('/journal');
   
   let bgImage = "https://lh3.googleusercontent.com/aida-public/AB6AXuD_4PWmZ-0nCsZ6edf5iXGGOwdnfekV-dyb4r5NPCKZqMDNuJpN0d7Au1LDy2AYlpBduY_2y6JHCIXUeXgHi_schp9M59u2falVJpaMr1vrpAI9xFullCRKufMRByHD7b4Fd8VRszK0MaxBuofUzdcg-1a7s102PGD_Yg-N02KBivFs0p9SY3CJIwBS4U770khGppnKF6kdqbdkT6PzkdbFLs8U-mP3KKteIVtRCwNak_Or6abPsXXO_JLUYUg0JHzfrH2Ga831Y7A";
   
   if (isSanctuary) {
     bgImage = "https://lh3.googleusercontent.com/aida/ADBb0ugfNHTD0P3lU6cLC_v5RIBUs0V9CevFqvq4Bwho4-IoDHnS9V8QC3gpzZjMdRYnRHgG_ryzO3_3N3p5s3oohWOZU6WgZnQHq7EELPOGIt04C-yUSdCfjdlNoOVAlRS2iWUMAYCXWp6zPOA92SmeIEz12Xpu6hmTKE8Sx1jPBZZzdcgAv264MsbFZJMnOhUBC8DOdZqMAbp44fsslLkNMzTIp3f4apz21lHh5zWrwUB6OiwRxjCCqEFrZw";
-  } else if (isCommunity) {
+  } else if (isCommunity || isJournal) {
     bgImage = "/backgrounds/boards-bg.jpg";
   } else if (isLibrary) {
     bgImage = "/backgrounds/library-bg.jpg";
@@ -102,12 +108,21 @@ export default function Layout() {
 
     const [notificationsOpen, setNotificationsOpen] = useState(false);
 
-    // Mock notifications list
-    const notifications = [
-      { id: 1, title: 'Sync Successful', desc: 'Tablet successfully synced 6 items.', time: '2 mins ago', icon: 'sync' },
-      { id: 2, title: 'New Milestone', desc: 'Child used "Water" icon 5 times today!', time: '1 hour ago', icon: 'emoji_events' },
-      { id: 3, title: 'App Update', desc: 'VoiceBridge updated to v1.0.2', time: '1 day ago', icon: 'system_update' },
-    ];
+    // Mock notifications list in state so they can be dismissed
+    const [notifications, setNotifications] = useState([
+      { id: 1, title: 'Sync Successful', desc: 'Tablet successfully synced 6 items.', time: '2 mins ago', icon: 'sync', link: '/sync' },
+      { id: 2, title: 'New Milestone', desc: 'Child used "Water" icon 5 times today!', time: '1 hour ago', icon: 'emoji_events', link: '/analytics' },
+      { id: 3, title: 'App Update', desc: 'VoiceBridge updated to v1.0.2', time: '1 day ago', icon: 'system_update', link: '/about' },
+    ]);
+
+    const handleNotifClick = (id) => {
+      // Remove notification when clicked
+      setNotifications(prev => prev.filter(n => n.id !== id));
+    };
+
+    const clearAllNotifs = () => {
+      setNotifications([]);
+    };
 
     return (
       <div className="font-body-lg text-on-surface min-h-screen relative overflow-hidden">
@@ -162,21 +177,41 @@ export default function Layout() {
                   <div className="absolute right-0 mt-3 w-80 rounded-2xl glass-card backdrop-blur-3xl shadow-2xl border border-white/40 overflow-hidden z-50 animate-[slidein_0.2s_ease]">
                     <div className="p-4 border-b border-white/20 bg-white/30 flex justify-between items-center">
                       <h3 className="font-title-md font-bold text-on-surface">Notifications</h3>
-                      <button onClick={() => setNotificationsOpen(false)} className="material-symbols-outlined text-sm text-on-surface-variant hover:text-error">close</button>
+                      <div className="flex items-center gap-2">
+                        {notifications.length > 0 && (
+                          <button onClick={clearAllNotifs} className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors">Clear All</button>
+                        )}
+                        <button onClick={() => setNotificationsOpen(false)} className="material-symbols-outlined text-sm text-on-surface-variant hover:text-error">close</button>
+                      </div>
                     </div>
                     <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
-                      {notifications.map((notif) => (
-                        <div key={notif.id} className="p-4 border-b border-white/10 hover:bg-white/20 transition-all cursor-pointer flex gap-3 items-start">
-                          <div className="p-2 rounded-full bg-primary/10 text-primary">
-                            <span className="material-symbols-outlined text-sm">{notif.icon}</span>
-                          </div>
-                          <div>
-                            <p className="font-semibold text-sm text-on-surface">{notif.title}</p>
-                            <p className="text-xs text-on-surface-variant mt-1">{notif.desc}</p>
-                            <p className="text-[10px] text-primary mt-2 font-bold uppercase tracking-wider">{notif.time}</p>
-                          </div>
+                      {notifications.length === 0 ? (
+                        <div className="p-6 text-center text-on-surface-variant">
+                          <span className="material-symbols-outlined text-3xl opacity-50 mb-2">notifications_paused</span>
+                          <p className="text-sm">You're all caught up!</p>
                         </div>
-                      ))}
+                      ) : (
+                        notifications.map((notif) => (
+                          <Link 
+                            to={notif.link} 
+                            onClick={() => {
+                              handleNotifClick(notif.id);
+                              setNotificationsOpen(false);
+                            }}
+                            key={notif.id} 
+                            className="p-4 border-b border-white/10 hover:bg-white/20 transition-all cursor-pointer flex gap-3 items-start block"
+                          >
+                            <div className="p-2 rounded-full bg-primary/10 text-primary">
+                              <span className="material-symbols-outlined text-sm">{notif.icon}</span>
+                            </div>
+                            <div>
+                              <p className="font-semibold text-sm text-on-surface">{notif.title}</p>
+                              <p className="text-xs text-on-surface-variant mt-1">{notif.desc}</p>
+                              <p className="text-[10px] text-primary mt-2 font-bold uppercase tracking-wider">{notif.time}</p>
+                            </div>
+                          </Link>
+                        ))
+                      )}
                     </div>
                   </div>
                 )}
