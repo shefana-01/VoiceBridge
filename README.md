@@ -148,7 +148,9 @@ Open the `voicebridge-android/` folder in Android Studio or IntelliJ IDEA Ultima
 
 ## 🗺️ Roadmap & Future Vision
 
-We are constantly evolving to provide the best possible experience. Here is what is on the horizon:
+We are constantly evolving to provide the best possible experience. **For a deep dive into our cross-platform offline-first strategy, please read our [ARCHITECTURE.md](ARCHITECTURE.md) design document.**
+
+Here is what is on the horizon:
 - 🔐 **Multi-factor authentication (TOTP)** for caregiver accounts.
 - ☁️ **Cloud media storage** (AWS S3 / GCS via django-storages) for seamless asset syncing.
 - 🎨 **Atmospheric child interface** — pastel-gradient theme with High-Contrast and ARIA-inspect accessibility toggles.
