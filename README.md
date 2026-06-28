@@ -104,10 +104,10 @@ voicebridge/
 
 ## 🛠️ Tech Stack & Tooling
 
-To ensure the highest quality, VoiceBridge was built and tested using robust hardware and industry-standard tools:
-- **My Development Setup:** PyCharm Professional (Backend & Frontend), IntelliJ IDEA Ultimate (Mobile/Android)
-- **Community Setup:** Contributors are welcome to use their preferred editors (e.g., VS Code, Android Studio)
-- **Testing Hardware:** MSI Thin 15 (Development), Samsung Galaxy S25 (Mobile/Tablet Testing)
+Here is the setup I use to build and test VoiceBridge:
+- **My Setup:** PyCharm Professional (for both Backend and Frontend) and IntelliJ IDEA Ultimate (for Android).
+- **For Contributors:** Feel free to use whatever editor you're most comfortable with (like VS Code or Android Studio).
+- **Hardware tested on:** MSI Thin 15 (Development) and Samsung Galaxy S25 (Mobile Testing).
 - **Version Control:** Git & GitHub
 
 ## 🚀 Getting Started
