@@ -104,8 +104,9 @@ voicebridge/
 
 ## 🛠️ Tech Stack & Tooling
 
-To ensure the highest quality, VoiceBridge is built and tested using industry-standard tools and robust hardware:
-- **IDEs & Editors:** PyCharm Professional (Backend), IntelliJ IDEA Ultimate / Android Studio (Mobile), VS Code (Frontend)
+To ensure the highest quality, VoiceBridge was built and tested using robust hardware and industry-standard tools:
+- **My Development Setup:** PyCharm Professional (Backend & Frontend), IntelliJ IDEA Ultimate (Mobile/Android)
+- **Community Setup:** Contributors are welcome to use their preferred editors (e.g., VS Code, Android Studio)
 - **Testing Hardware:** MSI Thin 15 (Development), Samsung Galaxy S25 (Mobile/Tablet Testing)
 - **Version Control:** Git & GitHub
 
