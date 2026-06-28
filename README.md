@@ -102,12 +102,19 @@ voicebridge/
         └── utils/               # AudioPlayer, permissions, helpers
 ```
 
+## 🛠️ Tech Stack & Tooling
+
+To ensure the highest quality, VoiceBridge is built and tested using industry-standard tools and robust hardware:
+- **IDEs & Editors:** PyCharm Professional (Backend), IntelliJ IDEA Ultimate / Android Studio (Mobile), VS Code (Frontend)
+- **Testing Hardware:** MSI Thin 15 (Development), Samsung Galaxy S25 (Mobile/Tablet Testing)
+- **Version Control:** Git & GitHub
+
 ## 🚀 Getting Started
 
 ### Prerequisites
 - Python 3.11+ and PostgreSQL 14+
 - Node.js 18+ and npm
-- Android Studio (for the mobile app)
+- Android Studio or IntelliJ IDEA Ultimate (for the mobile app)
 
 ### 1. Backend Setup
 ```bash
@@ -136,7 +143,7 @@ npm start                          # http://localhost:3000
 ```
 
 ### 3. Mobile Setup (Android)
-Open the `voicebridge-android/` folder in Android Studio. Let Gradle sync dependencies. Run on an emulator (ensure server URL is set to `http://10.0.2.2:8000/`) or directly on an Android tablet connected to the same network.
+Open the `voicebridge-android/` folder in Android Studio or IntelliJ IDEA Ultimate. Let Gradle sync dependencies. Run on an emulator (ensure server URL is set to `http://10.0.2.2:8000/`) or directly on a physical device like a Samsung Galaxy S25 connected to the same network.
 
 ## 🗺️ Roadmap
 
