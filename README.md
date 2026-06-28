@@ -2,25 +2,27 @@
 
 ![VoiceBridge Banner](banner.png)
 
-VoiceBridge is an open-source, offline-first Augmentative and Alternative Communication (AAC) platform designed to bridge the communication gap for non-verbal individuals, particularly in low-resource environments. 
+> **VoiceBridge** is a beautifully crafted, open-source, and offline-first Augmentative and Alternative Communication (AAC) platform. It is purpose-built to empower non-verbal individuals, ensuring that every child—regardless of their background or internet access—has a voice.
 
-Motivated by personal experience supporting a loved one with autism, VoiceBridge was built to be accessible to everyone. While we draw deep inspiration from incredible, advanced AAC solutions like Proloquo2Go that have pioneered this space, VoiceBridge focuses on a distinct mission: serving communities that require free, Android-first, and native-language (such as Bangla) support without relying on constant internet connectivity.
+Motivated by deep personal experience supporting a loved one with autism, VoiceBridge was built to break down barriers. While we draw immense inspiration from incredible, advanced AAC solutions like Proloquo2Go that have pioneered this space, VoiceBridge focuses on a distinctly vital mission: serving communities in low-resource environments. We provide a platform that is entirely free, Android-first, and beautifully optimized for native-language (such as Bangla) support without relying on constant internet connectivity.
 
-**Why Choose VoiceBridge?**
-- **Truly Accessible:** 100% free and open-source.
-- **Android-First:** Designed for affordable tablets and smartphones widely available globally.
-- **Mother-Tongue Ready:** Easily record custom audio in any language or dialect, complete with cultural nuances.
-- **Offline Reliability:** Once synced, the child's app works entirely offline—no internet required.
+### 🌟 Why VoiceBridge Stands Out
+- **Truly Accessible & Free:** 100% open-source with no hidden costs, subscriptions, or paywalls.
+- **Android-First Design:** Optimized for affordable tablets and smartphones, making it accessible globally.
+- **Mother-Tongue Ready:** Easily record custom audio in any language or dialect, embracing cultural nuances seamlessly.
+- **Offline Reliability:** Once synced, the child's app works entirely offline—perfect for areas with zero connectivity.
 
-## ✨ Key Features
+## ✨ Detailed Feature Review
 
 ### 🪷 Caregiver Web Portal (React)
-Our portal is designed as a secure, comprehensive "Sanctuary Dashboard" for caregivers to manage their child's communication journey.
+Our portal is a secure, comprehensive "Sanctuary Dashboard" allowing caregivers to mindfully manage their child's communication journey.
 - **Sanctuary Dashboard & Analytics** — Get a clear overview of active boards, daily usage insights, communication progress, and a mindful Care Journal.
 - **Advanced Board Editor** — A three-panel, Canva-style editor featuring a drag-and-drop icon library, live canvas, and real-time item properties.
 - **Custom Asset Creator & Asset Library** — Upload personal photos and record up to 10 seconds of mother-tongue audio. Assets are tracked across all boards with bulk upload support.
-- **Community Hub** — Browse, filter, and one-click clone vetted board templates shared by a global network of caregivers.
-- **Version History & Security** — Every save is snapshotted for non-destructive restores. Robust security settings ensure privacy.
+- **Community Hub & Review** — Browse, filter, and one-click clone vetted board templates. Leave detailed reviews and share feedback with a global network of caregivers.
+- **Maintenance & Security** — Robust system tools and a dedicated Maintenance page ensure the platform remains secure and optimized.
+- **Schedule & Routine Management** — Set daily communication goals and schedule routines to build consistent habits for the child.
+- **Version History** — Every save is snapshotted for non-destructive restores. 
 - **Multi-Child Profiles** — Easily manage separate boards and vocabularies for multiple individuals under your care.
 - **Fully Responsive** — Seamlessly adapts from desktop editing to mobile management on the go.
 
