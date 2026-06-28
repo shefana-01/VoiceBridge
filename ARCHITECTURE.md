@@ -47,6 +47,29 @@ As we look toward the future, our vision is to bring VoiceBridge to every child,
 
 To ensure every OS system can utilize VoiceBridge, we are expanding our strong Android foundation into a unified, cross-platform ecosystem utilizing React Native, without sacrificing a single drop of native performance.
 
+### The Future Data Flow Pattern
+
+While the core offline-first philosophy remains strictly intact, the mechanics will evolve to support real-time updates and seamless multi-platform delivery:
+
+```text
+Caregiver edits board
+        ↓
+Django REST API (Cloud) + Cloud Media Storage (AWS S3/GCS)
+        ↓
+FCM Real-Time Push Notification (Silent Trigger)
+        ↓
+Cross-Platform Sync Engine (React Native)
+        ↓
+WatermelonDB (SQLite) & Local File System (iOS/Android)
+        ↓
+Unified UI (Zero-latency offline access via Native Modules)
+```
+
+1. **Scalable Caregiver Management:** Caregivers interact with the React portal. Media uploads bypass local server storage and go directly to global Cloud Storage.
+2. **Instant Synchronization:** Periodic hourly polling is replaced by Firebase Cloud Messaging (FCM). The backend sends a silent, battery-efficient push notification to the device, triggering an immediate background sync only when a board actually changes.
+3. **Cross-Platform Storage:** Both iOS and Android devices use WatermelonDB to handle the exact same SQLite relational data structure natively.
+4. **Child Usage:** The app remains 100% offline-first. When an icon is tapped, the event bypasses the JavaScript bridge and directly hits the native `SoundPool` (Android) or `AVAudioEngine` (iOS) for instant playback.
+
 ### 1. Unified Monorepo Structure
 We are adopting a monorepo approach to share robust business logic, API clients, and data structures between the Caregiver Web Portal and the Mobile Apps. This ensures flawless consistency and rapid feature deployment across all platforms.
 
