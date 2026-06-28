@@ -145,17 +145,18 @@ npm start                          # http://localhost:3000
 ### 3. Mobile Setup (Android)
 Open the `voicebridge-android/` folder in Android Studio or IntelliJ IDEA Ultimate. Let Gradle sync dependencies. Run on an emulator (ensure server URL is set to `http://10.0.2.2:8000/`) or directly on a physical device like a Samsung Galaxy S25 connected to the same network.
 
-## 🗺️ Roadmap
+## 🗺️ Roadmap & Future Vision
 
-- **Multi-factor authentication (TOTP)** for caregiver accounts.
-- **Cloud media storage** (AWS S3 / GCS via django-storages).
-- **Atmospheric child interface** — pastel-gradient theme with High-Contrast and ARIA-inspect accessibility toggles.
-- **Vitals tracking integration**.
-- **Real-time push sync** (FCM) to replace polling.
-- **Clinical pilot & validation** with speech-language therapists.
+We are constantly evolving to provide the best possible experience. Here is what is on the horizon:
+- 🔐 **Multi-factor authentication (TOTP)** for caregiver accounts.
+- ☁️ **Cloud media storage** (AWS S3 / GCS via django-storages) for seamless asset syncing.
+- 🎨 **Atmospheric child interface** — pastel-gradient theme with High-Contrast and ARIA-inspect accessibility toggles.
+- ❤️ **Vitals tracking integration** to correlate communication patterns with physical well-being.
+- ⚡ **Real-time push sync** (FCM) to replace periodic polling, making updates instant.
+- 🩺 **Clinical pilot & validation** working closely with professional speech-language therapists.
 
-## 🤝 Contributing
-We warmly welcome contributions! Please fork the repository, create a feature branch, and open a pull request. For major architectural changes, please open an issue first to discuss your ideas.
+## 🤝 Join Our Community (Contributing)
+We warmly welcome contributions from developers, designers, and therapists! Please fork the repository, create a feature branch, and open a pull request. For major architectural changes, please open an issue first to discuss your brilliant ideas.
 
-## 📄 License
-This project is licensed under the PolyForm Noncommercial License 1.0. - see the [LICENSE.txt](LICENSE.txt) file for details.
+## 📄 License & Legal
+This project is licensed under the **PolyForm Noncommercial License 1.0.** - see the [LICENSE.txt](LICENSE.txt) file for details.
