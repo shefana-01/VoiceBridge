@@ -2,59 +2,59 @@ import { NavLink, Outlet, Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 
-const NAV = [
-  { to: '/',            label: 'Dashboard',    icon: 'dashboard',         end: true },
-  { to: '/children',    label: 'Children',     icon: 'child_care'             },
-  { to: '/boards',      label: 'Boards',       icon: 'dashboard'              },
-  { to: '/community',   label: 'Community',    icon: 'groups'                 },
-  { to: '/icons',       label: 'Library',      icon: 'auto_awesome_mosaic'    },
-  { to: '/about',               label: 'VoiceBridge',  icon: 'info'                   },
-  { to: '/voicebridge-simulator', label: 'VB Simulator', icon: 'graphic_eq'             },
-  { to: '/maintenance', label: 'Maintenance',  icon: 'medical_services'       },
-  { to: '/journal',     label: 'Journal',      icon: 'auto_stories'           },
-  { to: '/analytics',   label: 'Analytics',    icon: 'insights'               },
-  { to: '/settings',    label: 'Settings',     icon: 'settings'               },
+const NAV_SECTIONS = [
+  {
+    title: 'Core Functionalities',
+    items: [
+      { to: '/',            label: 'Dashboard',    icon: 'dashboard',         end: true },
+      { to: '/boards',      label: 'Boards',       icon: 'space_dashboard'        },
+      { to: '/icons',       label: 'Library',      icon: 'auto_awesome_mosaic'    },
+      { to: '/community',   label: 'Community',    icon: 'groups'                 },
+    ]
+  },
+  {
+    title: 'Daily Activity & Tracking',
+    items: [
+      { to: '/maintenance', label: 'Maintenance',  icon: 'medical_services'       },
+      { to: '/children',    label: 'Children',     icon: 'child_care'             },
+      { to: '/journal',     label: 'Journal',      icon: 'auto_stories'           },
+      { to: '/analytics',   label: 'Analytics',    icon: 'insights'               },
+    ]
+  },
+  {
+    title: 'Tools & System',
+    items: [
+      { to: '/voicebridge-simulator', label: 'Simulator', icon: 'graphic_eq'      },
+      { to: '/settings',    label: 'Settings',     icon: 'settings'               },
+      { to: '/about',       label: 'VoiceBridge',  icon: 'info'                   },
+    ]
+  }
 ];
 
-export default function Layout() {
-  const { user, logout } = useAuth();
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [now, setNow] = useState(new Date());
-  const location = useLocation();
-
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 30000);
-    return () => clearInterval(t);
-  }, []);
-
+const SidebarBody = ({ setDrawerOpen, user, logout }) => {
   const displayName = user?.first_name || user?.username || 'Caregiver';
-  const hour = now.getHours();
-  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
-  const day = now.getDate();
-  const month = now.toLocaleDateString(undefined, { month: 'short' });
-  const year = now.getFullYear();
-
-  const toggleTheme = () => {
-    document.documentElement.classList.toggle('dark');
-  };
-
-  const SidebarBody = () => (
+  return (
     <>
       <div className="px-md mb-xl mt-4">
         <h1 className="font-headline-lg text-primary tracking-tight">VoiceBridge</h1>
         <p className="font-label-caps text-label-caps text-on-surface-variant/70 uppercase tracking-widest mt-1">Empathetic Sanctuary</p>
       </div>
-      <nav className="flex-1 px-sm space-y-2 overflow-y-auto custom-scrollbar">
-        {NAV.map(({ to, label, icon, end }) => (
-          <NavLink key={to} to={to} end={end} onClick={() => setDrawerOpen(false)}
-            className={({ isActive }) =>
-              `flex items-center gap-4 px-6 py-4 rounded-full font-bold transition-all ${
-                isActive
-                  ? 'text-primary bg-primary-container/40 scale-[0.98]'
-                  : 'text-on-surface-variant/70 hover:text-primary hover:backdrop-blur-2xl hover:bg-white/40'}`}>
-            <span className="material-symbols-outlined">{icon}</span>
-            <span className="font-title-md">{label}</span>
-          </NavLink>
+      <nav className="flex-1 px-sm space-y-4 overflow-y-auto custom-scrollbar">
+        {NAV_SECTIONS.map((section) => (
+          <div key={section.title} className="flex flex-col gap-1">
+            <h3 className="px-6 text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest mb-1">{section.title}</h3>
+            {section.items.map(({ to, label, icon, end }) => (
+              <NavLink key={to} to={to} end={end} onClick={() => setDrawerOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-4 px-6 py-3 rounded-full font-bold transition-all ${
+                    isActive
+                      ? 'text-primary bg-primary-container/40 scale-[0.98]'
+                      : 'text-on-surface-variant/70 hover:text-primary hover:backdrop-blur-2xl hover:bg-white/40'}`}>
+                <span className="material-symbols-outlined">{icon}</span>
+                <span className="font-title-md">{label}</span>
+              </NavLink>
+            ))}
+          </div>
         ))}
       </nav>
       <div className="px-md mt-auto mb-4">
@@ -80,6 +80,29 @@ export default function Layout() {
       </div>
     </>
   );
+};
+
+export default function Layout() {
+  const { user, logout } = useAuth();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [now, setNow] = useState(new Date());
+  const location = useLocation();
+
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 30000);
+    return () => clearInterval(t);
+  }, []);
+
+  const displayName = user?.first_name || user?.username || 'Caregiver';
+  const hour = now.getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+  const day = now.getDate();
+  const month = now.toLocaleDateString(undefined, { month: 'short' });
+  const year = now.getFullYear();
+
+  const toggleTheme = () => {
+    document.documentElement.classList.toggle('dark');
+  };
 
   const isSanctuary = location.pathname === '/';
   const isCommunity = location.pathname.startsWith('/community');
@@ -106,14 +129,17 @@ export default function Layout() {
     bgImage = "/backgrounds/maintenance-bg.jpg";
   }
 
+    // ==========================================
+    // VOICEBRIDGE NOTIFICATION TYPES (System Definition)
+    // ==========================================
+    // 1. SYNC_STATUS: Tablet synced successfully, or sync failed (offline).
+    // 2. MILESTONE: "Child used 5 new words today!", "Communication streak: 3 days".
+    // 3. SYSTEM_ALERT: Low storage on tablet, App update available.
+    // 4. COMMUNITY: "Your shared board was cloned 10 times."
+    // 5. CAREGIVER_REMINDER: "Don't forget to fill out today's Care Journal."
+    // ==========================================
     const [notificationsOpen, setNotificationsOpen] = useState(false);
-
-    // Mock notifications list in state so they can be dismissed
-    const [notifications, setNotifications] = useState([
-      { id: 1, title: 'Sync Successful', desc: 'Tablet successfully synced 6 items.', time: '2 mins ago', icon: 'sync', link: '/maintenance' },
-      { id: 2, title: 'New Milestone', desc: 'Child used "Water" icon 5 times today!', time: '1 hour ago', icon: 'emoji_events', link: '/analytics' },
-      { id: 3, title: 'App Update', desc: 'VoiceBridge updated to v1.0.2', time: '1 day ago', icon: 'system_update', link: '/about' },
-    ]);
+    const [notifications, setNotifications] = useState([]);
 
     const handleNotifClick = (id) => {
       // Remove notification when clicked
@@ -131,7 +157,7 @@ export default function Layout() {
         
         {/* Desktop Sidebar */}
         <aside className="fixed left-0 top-0 h-screen hidden lg:flex flex-col py-xl z-40 w-[280px] rounded-r-lg bg-white/20 border-r border-white/20 backdrop-blur-2xl shadow-2xl shadow-primary/5">
-          <SidebarBody />
+          <SidebarBody setDrawerOpen={setDrawerOpen} user={user} logout={logout} />
         </aside>
 
         {/* Mobile drawer overlay */}
@@ -139,7 +165,7 @@ export default function Layout() {
           <div className="lg:hidden fixed inset-0 z-50 flex">
             <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setDrawerOpen(false)}></div>
             <aside className="relative w-[280px] h-full bg-surface-bright flex flex-col shadow-2xl animate-[slidein_0.2s_ease]">
-              <SidebarBody />
+              <SidebarBody setDrawerOpen={setDrawerOpen} user={user} logout={logout} />
             </aside>
           </div>
         )}
@@ -169,7 +195,9 @@ export default function Layout() {
                   className="p-3 rounded-full glass-card hover:shadow-lg transition-all group relative cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">notifications</span>
-                  <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                  {notifications.length > 0 && (
+                    <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                  )}
                 </button>
                 
                 {/* Notifications Dropdown Panel */}
