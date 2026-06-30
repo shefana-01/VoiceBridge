@@ -44,24 +44,32 @@ export default function Boards() {
           <Link to="/boards/new" className="vb-btn-primary">+ Create a board</Link>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {list.map((b) => (
+        <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          {[...list].sort((a, b) => a.name.localeCompare(b.name)).map((b) => (
             <div key={b.id} className="vb-card">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-[10px] uppercase tracking-wider font-bold
-                                 bg-secondary-container text-on-secondary-container
-                                 px-2 py-0.5 rounded-full">
-                  {b.rows}×{b.cols}
-                </span>
-                {!b.is_active && (
-                  <span className="text-[10px] uppercase tracking-wider font-bold
-                                   bg-surface-container text-on-surface-variant
-                                   px-2 py-0.5 rounded-full">
-                    Inactive
-                  </span>
+              <div 
+                className="h-24 w-full rounded-t-xl mb-4 border-b border-outline-variant/30 flex items-end p-2 relative bg-cover bg-center"
+                style={{ 
+                  backgroundColor: b.background_color || '#FFFFFF',
+                  backgroundImage: b.cover_icon ? `url(${b.cover_icon.image})` : 'none',
+                }}
+              >
+                {b.cover_icon && (
+                  <div className="absolute inset-0 bg-black/20 rounded-t-xl" />
                 )}
+                <div className="relative z-10 flex items-center gap-2 bg-white/90 backdrop-blur-md rounded-full px-2 py-1 shadow-sm">
+                  <span className="text-[10px] uppercase tracking-wider font-bold text-on-surface">
+                    {b.rows}×{b.cols}
+                  </span>
+                  {!b.is_active && (
+                    <span className="text-[10px] uppercase tracking-wider font-bold text-error">
+                      Inactive
+                    </span>
+                  )}
+                </div>
               </div>
-              <h3 className="text-lg font-bold">{b.name}</h3>
+              <div className="px-4 pb-4">
+                <h3 className="text-lg font-bold">{b.name}</h3>
               {b.description && (
                 <p className="text-sm text-on-surface-variant mt-1">
                   {b.description}
@@ -77,6 +85,7 @@ export default function Boards() {
                 <button onClick={() => remove(b.id)}
                         className="vb-btn-danger text-sm">Delete</button>
               </div>
+            </div>
             </div>
           ))}
         </div>

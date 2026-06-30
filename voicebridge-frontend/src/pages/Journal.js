@@ -5,6 +5,7 @@ import { toast } from '../components/Toaster';
 export default function Journal() {
   const [entries, setEntries] = useState([]);
   const [newEntry, setNewEntry] = useState('');
+  const [isShared, setIsShared] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [isWriting, setIsWriting] = useState(false);
@@ -28,8 +29,9 @@ export default function Journal() {
     if (!newEntry.trim()) return;
     setLoading(true);
     try {
-      await journalApi.create({ text: newEntry.trim() });
+      await journalApi.create({ text: newEntry.trim(), is_shared: isShared });
       setNewEntry('');
+      setIsShared(false);
       setIsWriting(false);
       toast.success('Journal entry saved');
       fetchJournal();
@@ -88,7 +90,19 @@ export default function Journal() {
             value={newEntry}
             onChange={(e) => setNewEntry(e.target.value)}
           />
-          <div className="flex justify-end mt-4">
+          <div className="flex items-center justify-between mt-4">
+            <label className="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors cursor-pointer select-none">
+              <input 
+                type="checkbox" 
+                className="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary"
+                checked={isShared}
+                onChange={(e) => setIsShared(e.target.checked)}
+              />
+              <span className="flex items-center gap-1 font-medium">
+                <span className="material-symbols-outlined text-[18px]">public</span>
+                Share with community
+              </span>
+            </label>
             <button 
               type="submit" 
               disabled={!newEntry.trim() || loading}
@@ -117,13 +131,21 @@ export default function Journal() {
                   <span className="text-on-surface-variant/50 px-1">•</span>
                   {new Date(entry.created_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
                 </div>
-                <button 
-                  onClick={() => handleDelete(entry.id)}
-                  className="text-on-surface-variant/30 hover:text-error transition-colors opacity-0 group-hover:opacity-100"
-                  title="Delete entry"
-                >
-                  <span className="material-symbols-outlined">delete</span>
-                </button>
+                <div className="flex items-center gap-3">
+                  {entry.is_shared && (
+                    <div className="flex items-center gap-1 text-sm text-secondary bg-secondary/10 px-3 py-1 rounded-full border border-secondary/20" title="Shared with community">
+                      <span className="material-symbols-outlined text-[16px]">public</span>
+                      Shared
+                    </div>
+                  )}
+                  <button 
+                    onClick={() => handleDelete(entry.id)}
+                    className="text-on-surface-variant/30 hover:text-error transition-colors opacity-0 group-hover:opacity-100"
+                    title="Delete entry"
+                  >
+                    <span className="material-symbols-outlined">delete</span>
+                  </button>
+                </div>
               </div>
               <p className="text-on-surface whitespace-pre-wrap leading-relaxed">{entry.text}</p>
             </div>

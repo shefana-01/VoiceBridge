@@ -8,7 +8,7 @@ const NAV_SECTIONS = [
     items: [
       { to: '/',            label: 'Dashboard',    icon: 'dashboard',         end: true },
       { to: '/boards',      label: 'Boards',       icon: 'space_dashboard'        },
-      { to: '/icons',       label: 'Library',      icon: 'auto_awesome_mosaic'    },
+      { to: '/library',     label: 'Library',      icon: 'auto_awesome_mosaic'    },
       { to: '/community',   label: 'Community',    icon: 'groups'                 },
     ]
   },
