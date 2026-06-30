@@ -11,6 +11,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Children from './pages/Children';
+import LibraryGateway from './pages/LibraryGateway';
 import IconsPage from './pages/Icons';
 import Boards from './pages/Boards';
 import BoardEditor from './pages/BoardEditor';
@@ -22,6 +23,8 @@ import Maintenance from './pages/Maintenance';
 import VoiceBridge from './pages/VoiceBridge';
 import About from './pages/About';
 import Journal from './pages/Journal';
+
+import FolderDPs from './pages/FolderDPs';
 
 function RequireAuth({ children }) {
   const { user, loading } = useAuth();
@@ -45,7 +48,9 @@ export default function App() {
         <Route element={<RequireAuth><Layout /></RequireAuth>}>
           <Route path="/"                element={<Dashboard />} />
           <Route path="/children"        element={<Children />} />
+          <Route path="/library"         element={<LibraryGateway />} />
           <Route path="/icons"           element={<IconsPage />} />
+          <Route path="/folder-dps"      element={<FolderDPs />} />
           <Route path="/boards"          element={<Boards />} />
           <Route path="/boards/new"      element={<BoardEditor />} />
           <Route path="/boards/:id/edit" element={<BoardEditor />} />
