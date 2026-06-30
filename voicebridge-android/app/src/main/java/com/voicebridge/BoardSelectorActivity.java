@@ -44,7 +44,7 @@ public class BoardSelectorActivity extends AppCompatActivity {
         ProgressBar progressBar = findViewById(R.id.progress_bar);
         TextView tvEmpty = findViewById(R.id.tv_empty);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new androidx.recyclerview.widget.GridLayoutManager(this, 2));
 
         boardAdapter = new BoardAdapter(board -> {
             // Child tapped a board — open the icon grid
@@ -53,6 +53,7 @@ public class BoardSelectorActivity extends AppCompatActivity {
             intent.putExtra("board_name", board.name);
             intent.putExtra("board_cols", board.cols);
             intent.putExtra("board_rows", board.rows);
+            intent.putExtra("board_bg_color", board.backgroundColor);
             startActivity(intent);
         });
         recyclerView.setAdapter(boardAdapter);
@@ -63,6 +64,17 @@ public class BoardSelectorActivity extends AppCompatActivity {
             if (boards == null || boards.isEmpty()) {
                 tvEmpty.setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.GONE);
+            } else if (boards.size() == 1) {
+                // Auto-skip phase 1 logic: If exactly 1 board, jump straight to it.
+                Board board = boards.get(0);
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra("board_id", board.id);
+                intent.putExtra("board_name", board.name);
+                intent.putExtra("board_cols", board.cols);
+                intent.putExtra("board_rows", board.rows);
+                intent.putExtra("board_bg_color", board.backgroundColor);
+                startActivity(intent);
+                finish(); // Prevent going back to this screen
             } else {
                 tvEmpty.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
