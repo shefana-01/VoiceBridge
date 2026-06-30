@@ -14,7 +14,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.voicebridge.models.Board;
 import com.voicebridge.models.Icon;
 
-@Database(entities = {Board.class, Icon.class}, version = 3, exportSchema = false)
+@Database(entities = {Board.class, Icon.class}, version = 4, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract IconDao iconDao();
 
