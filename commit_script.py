@@ -1,33 +1,15 @@
 import subprocess
 import os
 
-# Ensure we are in the right directory
 os.chdir(r"d:\Afsara\Codes\Afsara's Projects\VoiceBridge")
 
-# Get all changed/untracked files
-result = subprocess.run(['git', 'status', '--porcelain'], capture_output=True, text=True)
-lines = [line.strip() for line in result.stdout.split('\n') if line.strip()]
+result = subprocess.run(['git', 'diff', '--name-only'], capture_output=True, text=True)
+files = [line.strip() for line in result.stdout.split('\n') if line.strip()]
 
-files = []
-for line in lines:
-    # Output looks like " M file.txt" or "?? file.txt"
-    filepath = line[3:]
-    files.append(filepath)
-
-# Target number of commits
-TARGET_COMMITS = 36
+TARGET_COMMITS = 35
 
 print(f"Found {len(files)} files to commit.")
 
-# We want exactly 36 commits.
-# We will do 35 individual commits, and the 36th commit will contain all the remaining files.
-
-# Ensure we have at least 36 files. If we have fewer, we might have to split hunks (not easily automatable).
-if len(files) < TARGET_COMMITS:
-    print(f"ERROR: Only {len(files)} files, cannot make {TARGET_COMMITS} commits safely.")
-    exit(1)
-
-# Helper function to get a good commit message based on the file name
 def get_commit_message(filename):
     if "README.md" in filename:
         return "updated readme.md"
@@ -78,38 +60,26 @@ def get_commit_message(filename):
     else:
         return f"updated {os.path.basename(filename)}"
 
-# First 35 files get their own commit
+# Put README first if it's there
+if "README.md" in files:
+    files.remove("README.md")
+    files.insert(0, "README.md")
+
 for i in range(TARGET_COMMITS - 1):
     file_to_commit = files[i]
     msg = get_commit_message(file_to_commit)
     
-    # special case for README
-    if "README.md" in file_to_commit.upper():
-        msg = "updated readme.md"
-
     subprocess.run(['git', 'add', file_to_commit])
     subprocess.run(['git', 'commit', '-m', msg])
     print(f"Commit {i+1}: {msg} ({file_to_commit})")
 
-# The 36th commit gets everything else
 remaining_files = files[TARGET_COMMITS - 1:]
 for f in remaining_files:
     subprocess.run(['git', 'add', f])
 
-# Generate a message for the remaining chunk
-messages = set()
-for f in remaining_files:
-    if "README.md" in f.upper():
-        messages.add("updated readme.md")
-    else:
-        messages.add(get_commit_message(f))
-
-# Just use a generic message for the bulk commit or combine them
 final_msg = "finalizing system updates and bug fixes"
-if "updated readme.md" in messages:
-    final_msg = "updated readme.md"
-
 subprocess.run(['git', 'commit', '-m', final_msg])
 print(f"Commit {TARGET_COMMITS}: {final_msg} (and {len(remaining_files)} files)")
 
-print("Done. Check git log.")
+print("Done. Checking rev-list...")
+subprocess.run(['git', 'rev-list', '--count', 'HEAD'])
