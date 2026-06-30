@@ -17,8 +17,11 @@ Motivated by deep personal experience supporting a loved one with autism, VoiceB
 ### 🪷 Caregiver Web Portal (React)
 Our portal is a secure, comprehensive "Sanctuary Dashboard" allowing caregivers to mindfully manage their child's communication journey.
 - **Sanctuary Dashboard & Analytics** — Get a clear overview of active boards, daily usage insights, communication progress, and a mindful Care Journal.
-- **Advanced Board Editor** — A three-panel, Canva-style editor featuring a drag-and-drop icon library, live canvas, and real-time item properties.
-- **Custom Asset Creator & Asset Library** — Upload personal photos and record up to 10 seconds of mother-tongue audio. Assets are tracked across all boards with bulk upload support.
+- **Advanced Board Editor** — A three-panel, Canva-style editor featuring a drag-and-drop icon library, live canvas, real-time item properties, and nested board support (boards inside folders).
+- **Custom Asset Creator & Asset Library** — Upload personal photos and record up to 10 seconds of mother-tongue audio. 
+- **Folder Library (DPs)** — Dedicated interface to organize, cover, and manage all your nested folders and boards seamlessly.
+- **ARASAAC Pictograms Integration** — Search, browse, and instantly import thousands of globally recognized AAC symbols directly from ARASAAC servers natively within VoiceBridge.
+- **50+ Categorization System** — Deep and robust categorization built-in, from "Activities" to "Sensory Needs" and "Vegetables".
 - **Community Hub & Review** — Browse, filter, and one-click clone vetted board templates. Leave detailed reviews and share feedback with a global network of caregivers.
 - **Maintenance & Security** — Robust system tools and a dedicated Maintenance page ensure the platform remains secure and optimized.
 - **Schedule & Routine Management** — Set daily communication goals and schedule routines to build consistent habits for the child.
