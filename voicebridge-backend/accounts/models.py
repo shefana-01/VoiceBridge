@@ -92,6 +92,7 @@ class CareNote(models.Model):
         related_name="care_notes",
         on_delete=models.SET_NULL, null=True, blank=True)
     text = models.TextField(max_length=1000)
+    is_shared = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
