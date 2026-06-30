@@ -29,6 +29,14 @@ class Board(models.Model):
     )
     name = models.CharField(max_length=80)
     description = models.TextField(blank=True)
+    
+    parent = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True, blank=True,
+        related_name="sub_boards",
+        help_text="If this board sits inside another folder/board.",
+    )
 
     # Caregiver configures grid size — 3×3 for toddlers, 6×8 for advanced users
     rows = models.PositiveSmallIntegerField(
@@ -43,6 +51,14 @@ class Board(models.Model):
     background_color = models.CharField(
         max_length=7, default="#FFFFFF",
         help_text="Hex colour for the canvas background.",
+    )
+    
+    cover_icon = models.ForeignKey(
+        Icon,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name="+",
+        help_text="The DP / Cover image shown on the outside of the folder.",
     )
 
     is_active = models.BooleanField(
@@ -81,7 +97,7 @@ class BoardItem(models.Model):
         Board, on_delete=models.CASCADE, related_name="items"
     )
     icon = models.ForeignKey(
-        Icon, on_delete=models.PROTECT,  # protect: don't delete icons still in use
+        Icon, on_delete=models.CASCADE,
         related_name="placements",
     )
     row = models.PositiveSmallIntegerField()
