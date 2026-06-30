@@ -10,7 +10,6 @@ import com.voicebridge.sync.PeriodicSyncWorker;
 
 /**
  * Custom Application subclass for VoiceBridge.
- *
  * Bootstraps the WorkManager background sync scheduler at startup if the caregiver
  * has already logged in and linked a child profile on this device.
  */
