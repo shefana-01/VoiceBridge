@@ -18,6 +18,7 @@ import java.util.List;
 @Entity(tableName = "boards")
 public class Board {
 
+    @SerializedName("id")
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "id")
@@ -51,6 +52,19 @@ public class Board {
     @SerializedName("updated_at")
     @ColumnInfo(name = "updatedAt")
     public String updatedAt;
+
+    /**
+     * The cover icon for this board (Folder DP).
+     */
+    @Ignore
+    @SerializedName("cover_icon")
+    public com.voicebridge.api.IconDto coverIcon;
+
+    @ColumnInfo(name = "coverIconRemoteUrl")
+    public String coverIconRemoteUrl;
+
+    @ColumnInfo(name = "coverIconLocalPath")
+    public String coverIconLocalPath;
 
     /**
      * The icons placed on this board, as sent by the backend
