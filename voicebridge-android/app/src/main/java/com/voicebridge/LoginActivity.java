@@ -10,6 +10,7 @@ import android.os.Bundle;
 import com.voicebridge.sync.PeriodicSyncWorker;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -64,16 +65,30 @@ public class LoginActivity extends AppCompatActivity {
         userInput   = findViewById(R.id.input_username);
         passInput   = findViewById(R.id.input_password);
         childIdInput = findViewById(R.id.input_child_id);
+        CheckBox cbRememberMe = findViewById(R.id.cb_remember_me);
         btnSync     = findViewById(R.id.btn_login);
         progressBar = findViewById(R.id.progress_bar);
         tvStatus    = findViewById(R.id.tv_status);
 
         urlInput.setText(tokenStore.getBaseUrl());
 
-        btnSync.setOnClickListener(v -> performLogin());
+        // Pre-fill saved credentials if any
+        if (tokenStore.getSavedUsername() != null) {
+            userInput.setText(tokenStore.getSavedUsername());
+            passInput.setText(tokenStore.getSavedPassword());
+            cbRememberMe.setChecked(true);
+        }
+        if (childPrefs.contains(KEY_CHILD_ID)) {
+            childIdInput.setText(childPrefs.getString(KEY_CHILD_ID, ""));
+        }
+
+        btnSync.setOnClickListener(v -> {
+            boolean remember = cbRememberMe.isChecked();
+            performLogin(remember);
+        });
     }
 
-    private void performLogin() {
+    private void performLogin(boolean remember) {
         String url      = urlInput.getText().toString().trim();
         String username = userInput.getText().toString().trim();
         String password = passInput.getText().toString().trim();
@@ -109,6 +124,12 @@ public class LoginActivity extends AppCompatActivity {
                             tokens.getOrDefault("access", ""),
                             tokens.getOrDefault("refresh", "")
                     );
+
+                    if (remember) {
+                        tokenStore.saveCredentials(username, password);
+                    } else {
+                        tokenStore.clearCredentials();
+                    }
 
                     // Save child ID for all future launches
                     getSharedPreferences(PREF_CHILD, MODE_PRIVATE)
