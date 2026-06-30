@@ -55,6 +55,17 @@ public class FileDownloader {
      */
     public void downloadPendingFiles(String boardId, String authToken) {
         executor.execute(() -> {
+            // 1. Download Board Cover if needed
+            Board board = db.iconDao().getBoardById(boardId);
+            if (board != null && board.coverIconRemoteUrl != null && !board.coverIconRemoteUrl.isEmpty()
+                    && (board.coverIconLocalPath == null || board.coverIconLocalPath.isEmpty())) {
+                String coverPath = downloadFile(board.coverIconRemoteUrl, "images", "board_" + board.id + "_cover.jpg", authToken);
+                if (coverPath != null) {
+                    db.iconDao().updateBoardLocalPath(board.id, coverPath);
+                }
+            }
+
+            // 2. Download Icons
             List<Icon> pending = db.iconDao().getIconsPendingDownload(boardId);
             Log.d(TAG, pending.size() + " icons pending download for board " + boardId);
 
