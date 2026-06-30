@@ -32,10 +32,16 @@ public interface IconDao {
     @Query("DELETE FROM boards")
     void deleteAllBoards();
 
+    @Query("UPDATE boards SET coverIconLocalPath = :imgPath WHERE id = :boardId")
+    void updateBoardLocalPath(String boardId, String imgPath);
+
     // ---- Icon queries -------------------------------------------------------
 
     @Query("SELECT * FROM icons WHERE boardId = :boardId AND isActive = 1 ORDER BY row, col")
     LiveData<List<Icon>> getIconsForBoard(String boardId);
+
+    @Query("SELECT * FROM icons WHERE boardId = :boardId AND isActive = 1 ORDER BY row, col LIMIT 1")
+    Icon getFirstIconForBoard(String boardId);
 
     /** Used by FileDownloader to find icons still needing local files. */
     @Query("SELECT * FROM icons WHERE (localAudioPath IS NULL OR localAudioPath = '') AND boardId = :boardId")
