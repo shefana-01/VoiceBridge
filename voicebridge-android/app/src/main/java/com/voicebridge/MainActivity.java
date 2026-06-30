@@ -41,11 +41,20 @@ public class MainActivity extends AppCompatActivity {
 
         String boardId   = getIntent().getStringExtra("board_id");
         String boardName = getIntent().getStringExtra("board_name");
+        String bgColor   = getIntent().getStringExtra("board_bg_color");
         // Use the board's real column and row count.
         int cols = getIntent().getIntExtra("board_cols", 4);
         int rows = getIntent().getIntExtra("board_rows", 4);
         if (cols < 1) cols = 4;
         if (rows < 1) rows = 4;
+
+        if (bgColor != null && !bgColor.isEmpty()) {
+            try {
+                findViewById(android.R.id.content).setBackgroundColor(android.graphics.Color.parseColor(bgColor));
+            } catch (IllegalArgumentException e) {
+                // Ignore invalid colors
+            }
+        }
 
         TextView tvBoardTitle = findViewById(R.id.tv_board_title);
         if (tvBoardTitle != null && boardName != null) {
