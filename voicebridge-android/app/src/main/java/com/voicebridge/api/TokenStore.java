@@ -45,10 +45,31 @@ public class TokenStore {
     public boolean isLoggedIn() { return getAccess() != null; }
 
     public String getBaseUrl() {
-        return prefs.getString(KEY_BASE_URL, "http://192.168.72.19:8000/");
+        String saved = prefs.getString(KEY_BASE_URL, "http://192.168.0.238:8000/");
+        if (saved.contains("192.168.72.19")) {
+            return "http://192.168.0.238:8000/";
+        }
+        return saved;
     }
     public void setBaseUrl(String url) {
         if (!url.endsWith("/")) url += "/";
         prefs.edit().putString(KEY_BASE_URL, url).apply();
     }
+
+    public void saveCredentials(String username, String password) {
+        prefs.edit()
+             .putString("saved_user", username)
+             .putString("saved_pass", password)
+             .apply();
+    }
+
+    public void clearCredentials() {
+        prefs.edit()
+             .remove("saved_user")
+             .remove("saved_pass")
+             .apply();
+    }
+
+    @Nullable public String getSavedUsername() { return prefs.getString("saved_user", null); }
+    @Nullable public String getSavedPassword() { return prefs.getString("saved_pass", null); }
 }
