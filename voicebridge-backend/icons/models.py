@@ -30,17 +30,57 @@ class Icon(models.Model):
     """
 
     class Category(models.TextChoices):
-        FOOD       = "FOOD",       "Food & Drink"
-        EMOTIONS   = "EMOTIONS",   "Emotions"
-        BODY       = "BODY",       "Body & Hygiene"
-        ACTIVITIES = "ACTIVITIES", "Activities"
-        PEOPLE     = "PEOPLE",     "People"
-        PLACES     = "PLACES",     "Places"
-        REQUESTS   = "REQUESTS",   "Requests & Needs"
-        EMERGENCY  = "EMERGENCY",  "Emergency"
-        ROUTINES   = "ROUTINES",   "Routines"
-        MEDICATIONS= "MEDICATIONS","Medications"
-        OTHER      = "OTHER",      "Other"
+        FOOD         = "FOOD",         "Food & Drink"
+        EMOTIONS     = "EMOTIONS",     "Emotions"
+        BODY         = "BODY",         "Body & Hygiene"
+        ACTIVITIES   = "ACTIVITIES",   "Activities"
+        PEOPLE       = "PEOPLE",       "People"
+        PLACES       = "PLACES",       "Places"
+        REQUESTS     = "REQUESTS",     "Requests & Needs"
+        EMERGENCY    = "EMERGENCY",    "Emergency"
+        ROUTINES     = "ROUTINES",     "Routines"
+        MEDICATIONS  = "MEDICATIONS",  "Medications"
+        ANIMALS      = "ANIMALS",      "Animals & Pets"
+        CLOTHING     = "CLOTHING",     "Clothing & Accessories"
+        TOYS         = "TOYS",         "Toys & Games"
+        SCHOOL       = "SCHOOL",       "School & Education"
+        COLORS       = "COLORS",       "Colors"
+        SHAPES       = "SHAPES",       "Shapes"
+        NUMBERS      = "NUMBERS",      "Numbers & Math"
+        TIME         = "TIME",         "Time & Days"
+        WEATHER      = "WEATHER",      "Weather & Seasons"
+        TRANSPORT    = "TRANSPORT",    "Transportation"
+        NATURE       = "NATURE",       "Nature & Outdoors"
+        HOME         = "HOME",         "Home & Furniture"
+        KITCHEN      = "KITCHEN",      "Kitchen & Cooking"
+        BATHROOM     = "BATHROOM",     "Bathroom Items"
+        BEDROOM      = "BEDROOM",      "Bedroom Items"
+        ELECTRONICS  = "ELECTRONICS",  "Electronics & Tech"
+        SPORTS       = "SPORTS",       "Sports & Fitness"
+        MUSIC        = "MUSIC",        "Music & Instruments"
+        ART          = "ART",          "Art & Craft"
+        PROFESSIONS  = "PROFESSIONS",  "Jobs & Professions"
+        HOLIDAYS     = "HOLIDAYS",     "Holidays & Events"
+        CHORES       = "CHORES",       "Chores & Tasks"
+        SENSORY      = "SENSORY",      "Sensory Needs"
+        SOCIAL       = "SOCIAL",       "Social Greetings"
+        QUESTIONS    = "QUESTIONS",    "Questions"
+        DESCRIPTIONS = "DESCRIPTIONS", "Adjectives & Descriptions"
+        ACTIONS      = "ACTIONS",      "Actions & Verbs"
+        PREPOSITIONS = "PREPOSITIONS", "Positions & Directions"
+        PRONOUNS     = "PRONOUNS",     "Pronouns"
+        FEELINGS     = "FEELINGS",     "Physical Feelings"
+        MEDICAL      = "MEDICAL",      "Medical & Doctor"
+        THERAPY      = "THERAPY",      "Therapy & Exercises"
+        HOBBIES      = "HOBBIES",      "Hobbies & Interests"
+        MEDIA        = "MEDIA",        "TV, Movies & Books"
+        SNACKS       = "SNACKS",       "Snacks & Treats"
+        DRINKS       = "DRINKS",       "Drinks & Beverages"
+        VEGETABLES   = "VEGETABLES",   "Vegetables"
+        FRUITS       = "FRUITS",       "Fruits"
+        DESSERTS     = "DESSERTS",     "Desserts & Sweets"
+        UTENSILS     = "UTENSILS",     "Utensils"
+        OTHER        = "OTHER",        "Other"
 
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -66,6 +106,7 @@ class Icon(models.Model):
     )
     audio = models.FileField(
         upload_to="icons/audio/%Y/%m/",
+        blank=True, null=True,
         validators=[
             FileExtensionValidator(["mp3", "wav", "m4a", "ogg", "webm", "weba"]),
             validate_audio,
@@ -77,6 +118,18 @@ class Icon(models.Model):
         max_length=160, blank=True,
         help_text="Text-to-speech fallback text used by the Android app.",
     )
+    # Whether this icon is intended to be a folder cover instead of a grid item
+    is_folder_dp = models.BooleanField(
+        default=False,
+        help_text="If true, this icon only shows in the Folder DP library."
+    )
+    arasaac_id = models.CharField(
+        max_length=50, blank=True, null=True,
+        help_text="If imported from ARASAAC, the original ID."
+    )
+
+    is_shared = models.BooleanField(default=False)
+    language = models.CharField(max_length=40, blank=True, default="English", help_text="e.g. English, Bengali, Spanish")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
