@@ -7,13 +7,22 @@ package com.voicebridge.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.voicebridge.R;
+import com.voicebridge.db.AppDatabase;
 import com.voicebridge.models.Board;
+import com.voicebridge.models.Icon;
+
+import java.io.File;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +61,22 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
     public void onBindViewHolder(@NonNull BoardViewHolder holder, int position) {
         Board board = boards.get(position);
         holder.tvBoardName.setText(board.name);
-        holder.tvBoardSize.setText(board.rows + " × " + board.cols + " grid");
+        
+        // Reset to default folder icon while loading
+        holder.imageViewFolder.setImageResource(android.R.drawable.ic_menu_agenda);
+        
+        if (board.coverIconLocalPath != null && !board.coverIconLocalPath.isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                    .load(new File(board.coverIconLocalPath))
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(holder.imageViewFolder);
+        } else if (board.coverIconRemoteUrl != null && !board.coverIconRemoteUrl.isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                    .load(board.coverIconRemoteUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.imageViewFolder);
+        }
+
         holder.itemView.setOnClickListener(v -> listener.onBoardClick(board));
     }
 
@@ -61,12 +85,12 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
 
     static class BoardViewHolder extends RecyclerView.ViewHolder {
         final TextView tvBoardName;
-        final TextView tvBoardSize;
+        final ImageView imageViewFolder;
 
         BoardViewHolder(View itemView) {
             super(itemView);
             tvBoardName = itemView.findViewById(R.id.tv_board_name);
-            tvBoardSize = itemView.findViewById(R.id.tv_board_size);
+            imageViewFolder = itemView.findViewById(R.id.image_view_folder);
         }
     }
 }
