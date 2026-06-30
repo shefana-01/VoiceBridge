@@ -24,15 +24,17 @@ export const icons = {
   list:    (params={})  => api.get   ('/icons/', { params }),
   create:  (formData)   => api.post  ('/icons/', formData,
                             { headers: {'Content-Type': 'multipart/form-data'} }),
-  update:  (id, payload)=> api.patch (`/icons/${id}/`, payload),
+  update:  (id, formData)=> api.patch (`/icons/${id}/`, formData,
+                            { headers: {'Content-Type': 'multipart/form-data'} }),
   remove:  (id)         => api.delete(`/icons/${id}/`),
+  importArasaac: (data) => api.post('/icons/arasaac/', data),
 };
 
 export const boards = {
   list:    ()           => api.get  ('/boards/'),
   detail:  (id)         => api.get  (`/boards/${id}/`),
   create:  (payload)    => api.post ('/boards/', payload),
-  update:  (id, payload)=> api.put  (`/boards/${id}/`, payload),
+  update:  (id, payload)=> api.patch(`/boards/${id}/`, payload),
   remove:  (id)         => api.delete(`/boards/${id}/`),
   sync:    (params={})  => api.get  ('/boards/sync/', { params }),
 };
@@ -41,6 +43,9 @@ export const community = {
   list:     (params={}) => api.get (`/community/templates/`, { params }),
   detail:   (id)        => api.get (`/community/templates/${id}/`),
   download: (id)        => api.post(`/community/templates/${id}/download/`),
+  sharedJournals: ()    => api.get (`/community/shared-journals/`),
+  sharedIcons: (params={}) => api.get(`/community/shared-icons/`, { params }),
+  cloneIcon: (id)       => api.post(`/community/shared-icons/${id}/clone/`),
 };
 
 export const journal = {
