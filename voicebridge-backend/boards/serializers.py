@@ -23,11 +23,19 @@ class BoardItemSerializer(serializers.ModelSerializer):
 
 class BoardSerializer(serializers.ModelSerializer):
     items = BoardItemSerializer(many=True, required=False)
+    cover_icon = IconSerializer(read_only=True)
+    cover_icon_id = serializers.PrimaryKeyRelatedField(
+        queryset=Icon.objects.all(), source="cover_icon", write_only=True, required=False, allow_null=True
+    )
+    parent_id = serializers.PrimaryKeyRelatedField(
+        queryset=Board.objects.all(), source="parent", write_only=True, required=False, allow_null=True
+    )
 
     class Meta:
         model = Board
         fields = ("id", "name", "description", "rows", "cols",
                   "background_color", "is_active", "child",
+                  "cover_icon", "cover_icon_id", "parent", "parent_id",
                   "items", "created_at", "updated_at")
         read_only_fields = ("id", "created_at", "updated_at")
 
