@@ -130,6 +130,9 @@ public class SyncManager {
         for (Board board : body.boards) {
             if (board == null || board.id == null) continue;
             board.childId = childId;
+            if (board.coverIcon != null) {
+                board.coverIconRemoteUrl = board.coverIcon.image;
+            }
             roomBoards.add(board);
 
             // ---- THE FIX: flatten items[] into Room Icon rows ----
