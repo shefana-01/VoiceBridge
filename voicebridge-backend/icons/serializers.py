@@ -14,5 +14,5 @@ class IconSerializer(serializers.ModelSerializer):
     class Meta:
         model = Icon
         fields = ("id", "label", "category", "image", "audio",
-                  "tts_text", "created_at", "updated_at")
+                  "tts_text", "is_shared", "language", "is_folder_dp", "arasaac_id", "created_at", "updated_at")
         read_only_fields = ("id", "created_at", "updated_at")
