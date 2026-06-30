@@ -7,4 +7,9 @@ from .views import TemplateViewSet
 
 router = DefaultRouter()
 router.register("templates", TemplateViewSet, basename="templates")
+
+from .views import SharedCareNoteViewSet, SharedIconViewSet
+router.register("shared-journals", SharedCareNoteViewSet, basename="shared-journals")
+router.register("shared-icons", SharedIconViewSet, basename="shared-icons")
+
 urlpatterns = router.urls
