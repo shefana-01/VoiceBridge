@@ -81,5 +81,5 @@ from .models import CareNote
 class CareNoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = CareNote
-        fields = ["id", "text", "child", "created_at"]
+        fields = ["id", "text", "child", "is_shared", "created_at"]
         read_only_fields = ["id", "created_at"]
