@@ -18,9 +18,13 @@ class BoardViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         qs = Board.objects.filter(owner=self.request.user)\
                           .prefetch_related("items__icon")
-        child_id = self.request.query_params.get("child")
-        if child_id and child_id.isdigit():
-            qs = qs.filter(child_id=int(child_id))
+        child_param = self.request.query_params.get("child")
+        if child_param:
+            if child_param.isdigit():
+                qs = qs.filter(child_id=int(child_param))
+            else:
+                # If the user typed the child's name in the Android app instead of the ID
+                qs = qs.filter(child__name__iexact=child_param)
         return qs
 
     def perform_create(self, serializer):
@@ -52,6 +56,55 @@ class BoardViewSet(viewsets.ModelViewSet):
             "boards": data,
             "synced_at": timezone.now().isoformat(),
         })
+
+    @action(detail=True, methods=["post"], url_path="add_icon")
+    def add_icon(self, request, pk=None):
+        """
+        POST /api/v1/boards/<id>/add_icon/
+        Body: {"icon_id": <id>}
+        Finds the first available empty grid slot and places the icon there.
+        If the board is completely full, expands the board by adding a new row.
+        """
+        board = self.get_object()
+        icon_id = request.data.get("icon_id")
+        if not icon_id:
+            return Response({"detail": "icon_id is required."}, status=400)
+            
+        from icons.models import Icon
+        from .models import BoardItem
+        
+        try:
+            icon = Icon.objects.get(id=icon_id)
+        except Icon.DoesNotExist:
+            return Response({"detail": "Icon not found."}, status=404)
+            
+        existing_items = BoardItem.objects.filter(board=board).values_list('row', 'col')
+        occupied_slots = set(existing_items)
+        
+        # Find first empty slot
+        target_row = None
+        target_col = None
+        for r in range(1, board.rows + 1):
+            for c in range(1, board.cols + 1):
+                if (r, c) not in occupied_slots:
+                    target_row = r
+                    target_col = c
+                    break
+            if target_row is not None:
+                break
+                
+        # If board is full, expand rows by 1
+        if target_row is None:
+            board.rows += 1
+            board.save(update_fields=['rows'])
+            target_row = board.rows
+            target_col = 1
+            
+        BoardItem.objects.create(board=board, icon=icon, row=target_row, col=target_col)
+        # Touch updated_at on board
+        board.save(update_fields=['updated_at'])
+        
+        return Response({"detail": "Icon added", "row": target_row, "col": target_col})
 
     @action(detail=True, methods=["post"], url_path="save_version")
     def save_version(self, request, pk=None):
