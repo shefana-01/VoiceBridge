@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="6dp"
+    android:layout_margin="2dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="0dp"
     app:cardBackgroundColor="#66FFFFFF">
@@ -13,13 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/glass_border"
-        android:padding="8dp">
+        android:padding="2dp">
 
         <ImageView
             android:id="@+id/image_view_icon"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="1:1"
+            android:scaleType="centerCrop"
             android:contentDescription="Icon Image"
             android:src="@mipmap/ic_launcher"
             app:layout_constraintTop_toTopOf="parent"
