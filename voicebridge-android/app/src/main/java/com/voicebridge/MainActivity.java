@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                     ? icon.ttsText : icon.label;
             audioPlayer.playAudio(icon.localAudioPath, fallback);
         });
+        iconAdapter.setRows(rows);
         recyclerView.setAdapter(iconAdapter);
 
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);

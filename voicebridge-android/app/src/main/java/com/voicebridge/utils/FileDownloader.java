@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.voicebridge.db.AppDatabase;
 import com.voicebridge.models.Icon;
+import com.voicebridge.models.Board;
 
 import java.io.File;
 import java.io.FileOutputStream;
