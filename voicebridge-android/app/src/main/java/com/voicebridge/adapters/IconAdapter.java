@@ -27,6 +27,7 @@ import java.util.List;
 public class IconAdapter extends RecyclerView.Adapter<IconAdapter.IconViewHolder> {
 
     private List<Icon> icons = new ArrayList<>();
+    private int rows = 4;
     private final OnIconClickListener listener;
 
     public interface OnIconClickListener {
@@ -36,6 +37,10 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.IconViewHolder
     public IconAdapter(OnIconClickListener listener) {
         this.listener = listener;
         setHasStableIds(true); // for smoother RecyclerView animations
+    }
+
+    public void setRows(int rows) {
+        if (rows > 0) this.rows = rows;
     }
 
     public void setIcons(List<Icon> newIcons) {
@@ -111,7 +116,18 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.IconViewHolder
         // Colour-code by category for quick visual recognition
         holder.itemView.setContentDescription(icon.label + " icon");
         holder.itemView.setFocusable(true);
-        holder.itemView.setOnClickListener(v -> listener.onIconClick(icon));
+        
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            private long lastClickTime = 0;
+            @Override
+            public void onClick(View v) {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastClickTime > 500) {
+                    lastClickTime = currentTime;
+                    listener.onIconClick(icon);
+                }
+            }
+        });
     }
 
     @Override

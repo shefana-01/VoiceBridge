@@ -11,7 +11,9 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -43,6 +45,7 @@ public class AudioPlayer {
     private final SoundPool soundPool;
     private TextToSpeech tts;
     private final Map<String, Integer> loadedSounds = new HashMap<>();
+    private final List<Integer> activeStreams = new ArrayList<>();
     private boolean ttsReady = false;
     private String pendingTtsText = null;
 
@@ -82,6 +85,8 @@ public class AudioPlayer {
      * empty, or fails to load, fall back to TTS using {@code fallbackText}.
      */
     public void playAudio(String filePath, String fallbackText) {
+        stop(); // Stop any currently playing audio
+
         if (filePath != null && !filePath.isEmpty() && new File(filePath).exists()) {
             Integer soundId = loadedSounds.get(filePath);
             if (soundId == null) {
@@ -93,7 +98,8 @@ public class AudioPlayer {
                 soundPool.setOnLoadCompleteListener((sp, sampleId, status) -> {
                     if (sampleId == id) {
                         if (status == 0) {
-                            sp.play(id, 1.0f, 1.0f, /*priority*/ 1, /*loop*/ 0, /*rate*/ 1.0f);
+                            int streamId = sp.play(id, 1.0f, 1.0f, /*priority*/ 1, /*loop*/ 0, /*rate*/ 1.0f);
+                            if (streamId != 0) activeStreams.add(streamId);
                         } else {
                             Log.w(TAG, "SoundPool load failed for " + filePath
                                        + " (status=" + status + ") — falling back to TTS");
@@ -104,7 +110,8 @@ public class AudioPlayer {
                 });
             } else {
                 // Cached — play instantly.
-                soundPool.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f);
+                int streamId = soundPool.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f);
+                if (streamId != 0) activeStreams.add(streamId);
             }
         } else {
             speakTts(fallbackText);
@@ -136,9 +143,10 @@ public class AudioPlayer {
 
     /** Stops anything currently playing and flushes the TTS queue. */
     public void stop() {
-        for (Integer id : loadedSounds.values()) {
-            if (id != null) soundPool.stop(id);
+        for (Integer streamId : activeStreams) {
+            if (streamId != null) soundPool.stop(streamId);
         }
+        activeStreams.clear();
         if (ttsReady) tts.stop();
     }
 
